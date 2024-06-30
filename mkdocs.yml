@@ -20,6 +20,8 @@ theme:
     primary: 'light green'
     accent: 'light green'
 
+  custom_dir: overrides
+
   feature:
     - content.code.annotate
     - navigation.tracking
