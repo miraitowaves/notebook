@@ -1,17 +1,6 @@
-# Welcome to MkDocs
+# Welcome to Casette's Notebook
 
-For full documentation visit [mkdocs.org](https://www.mkdocs.org).
+咱计院就是说，笔记真的非常的多！
 
-## Commands
+但也有一些课程，关于它的笔记比较少，还需要补充。这个博客就是干这个的！
 
-* `mkdocs new [dir-name]` - Create a new project.
-* `mkdocs serve` - Start the live-reloading docs server.
-* `mkdocs build` - Build the documentation site.
-* `mkdocs -h` - Print help message and exit.
-
-## Project layout
-
-    mkdocs.yml    # The configuration file.
-    docs/
-        index.md  # The documentation homepage.
-        ...       # Other markdown pages, images and other files.
