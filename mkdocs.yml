@@ -112,9 +112,6 @@ extra:
 nav:
   - Home:
     - index.md
-  - 计算机科学 Computer Science:
-    - 应用运筹学 AOR: 
-      - AOR/index.md
   - 系统 System: 
     - 汇编与接口: 
       - AA/index.md
