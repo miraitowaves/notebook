@@ -112,6 +112,3 @@ extra:
 nav:
   - Home:
     - index.md
-  - 系统 System: 
-    - 汇编与接口: 
-      - AA/index.md
