@@ -1,10 +1,10 @@
-site_name: Casette's Notebook
+site_name: MiraiToWaves's Notebook
 site_url: https://miraitowaves.github.io/notebook/
 repo_name: miraitowaves/notebook  #存储库名称，一般自动设置
 repo_url: https://github.com/miraitowaves/notebook  #存储库URL
 # edit_uri: tree/master/docs  #每个文档的顶部显示一个编辑按钮，""则隐藏
-site_description: Casette's Notebook
-copyright: Copyright &copy; 2024 <a href="https://github.com/miraitowaves"  target="_blank" rel="noopener">Casette</a>
+site_description: MiraiToWaves's Notebook
+copyright: Copyright &copy; 2024 <a href="https://github.com/miraitowaves"  target="_blank" rel="noopener">MiraiToWaves</a>
 
 theme: 
   name: material
