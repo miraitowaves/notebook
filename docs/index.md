@@ -1,4 +1,4 @@
-# Welcome to MiraiToWaves's Notebook
+# Welcome to Casette's Notebook
 
 这个笔记网站，会在不久的将来上传我的一些经验和笔记。
 
