@@ -68,6 +68,11 @@ markdown_extensions:
       anchor_linenums: true
   - pymdownx.arithmatex:
       generic: true
+  - pymdownx.superfences: # mermaid插件，渲染流程图、时序图、序列图、甘特图、类图、对象图、状态图、饼图、流程图、时序图、序列图、甘特图、类图、对象图、状态图、饼图
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
 
 
 extra_css:
@@ -109,6 +114,17 @@ extra:
 #         - tech_accu/index.md
 #         - cour_note/index.md
 
+
 nav:
   - Home:
     - index.md
+  - Course:
+    - Course/index.md
+    - 大模型应用与实践:
+      - Course/大模型应用与实践/index.md
+      - Course/大模型应用与实践/Intro to LLM.md
+      - Course/大模型应用与实践/Prompting.md
+      - Course/大模型应用与实践/Transformer.md
+      - Course/大模型应用与实践/Agent.md
+
+  
