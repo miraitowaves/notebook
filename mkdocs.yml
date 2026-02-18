@@ -11,8 +11,7 @@ copyright: Copyright &copy; 2026 <a href="https://github.com/miraitowaves"  targ
 theme: 
   name: material
   language: zh
-  logo: log.ico
-  favicon: log.ico
+  favicon: assets/favicon.ico
   # custom_dir: notebook/overrides
   features:
     - content.code.annotate
@@ -23,6 +22,11 @@ theme:
   font:
     text: LXGW WenKai Screen
     code: JetBrains Mono
+  icon:
+    repo: fontawesome/brands/git-alt
+    logo: material/notebook-multiple
+    previous: fontawesome/solid/angle-left
+    next: fontawesome/solid/angle-right
   palette:     #切换昼夜模式的颜色，审美差就用默认，专业点就自定义
     - media: "(prefers-color-scheme: light)" 
       scheme: default  #配色方案：浅色模式
