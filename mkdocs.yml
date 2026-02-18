@@ -26,8 +26,8 @@ theme:
   palette:     #切换昼夜模式的颜色，审美差就用默认，专业点就自定义
     - media: "(prefers-color-scheme: light)" 
       scheme: default  #配色方案：浅色模式
-      primary: brown  #原色，默认蓝，用于标题、侧边栏、文本链接和其他几个组件
-      accent: brown  #强调色，默认蓝，可以交互的元素如悬停链接、按钮和滚动条
+      primary: light green  #原色，默认蓝，用于标题、侧边栏、文本链接和其他几个组件
+      accent: amber  #强调色，默认蓝，可以交互的元素如悬停链接、按钮和滚动条
       toggle:
         icon: material/weather-sunny #图标，太阳
         name: Switch to dark mode
