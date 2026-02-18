@@ -1,0 +1,19 @@
+name: Publish docs via GitHub Pages
+on:
+  push:
+    branches:
+      - main  # 或者是你的主分支名称
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.x
+      - run: pip install mkdocs-material # 如果你使用了 material 主题
+      - run: mkdocs gh-deploy --force
