@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html class="no-js" lang="zh">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="fangxh's Notebook" name="description"/>
+<link href="../../../log.ico" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.2" name="generator"/>
+<title>A Survey of Foundation Model Powered Recommender Systems：From Feature Based, Generative to Agentic Paradigms - fangxh's Notebook</title>
+<link href="../../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=LXGW+WenKai+Screen:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"LXGW WenKai Screen";--md-code-font:"JetBrains Mono"}</style>
+<link href="../../../css/timeline.css" rel="stylesheet"/>
+<link href="../../../css/heti.css" rel="stylesheet"/>
+<link href="https://gcore.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css" rel="stylesheet"/>
+<link href="https://gcore.jsdelivr.net/npm/lxgw-wenkai-screen-webfont@1.1.0/style.css" rel="stylesheet"/>
+<link href="https://gcore.jsdelivr.net/npm/lxgw-wenkai-webfont@1.1.0/style.css" rel="stylesheet"/>
+<link href="../../../css/custom.css" rel="stylesheet"/>
+<link href="../../../css/card.css" rel="stylesheet"/>
+<link href="../../../css/tasklist.css" rel="stylesheet"/>
+<link href="../../../css/flink.css" rel="stylesheet"/>
+<link href="../../../css/more_changelog.css" rel="stylesheet"/>
+<script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body data-md-color-accent="amber" data-md-color-primary="light-green" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#framework">
+          跳转至
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header" data-md-component="header">
+<nav aria-label="页眉" class="md-header__inner md-grid">
+<a aria-label="fangxh's Notebook" class="md-header__button md-logo" data-md-component="logo" href="../../.." title="fangxh's Notebook">
+<img alt="logo" src="../../../log.ico"/>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            fangxh's Notebook
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              A Survey of Foundation Model Powered Recommender Systems：From Feature Based, Generative to Agentic Paradigms
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="amber" data-md-color-media="(prefers-color-scheme: light)" data-md-color-primary="light-green" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"></path></svg>
+</label>
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-primary="indigo" data-md-color-scheme="slate" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"></path></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="搜索" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="搜索" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+</label>
+<nav aria-label="查找" class="md-search__options">
+<button aria-label="清空当前内容" class="md-search__icon md-icon" tabindex="-1" title="清空当前内容" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="" tabindex="0">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<nav aria-label="标签" class="md-tabs" data-md-component="tabs">
+<div class="md-grid">
+<ul class="md-tabs__list">
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../..">
+          
+  
+  
+    
+  
+  Home
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../00%20%E7%9B%AE%E5%BD%95/">
+          
+  
+  
+    
+  
+  推荐系统
+
+        </a>
+</li>
+</ul>
+</div>
+</nav>
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="导航栏" class="md-nav md-nav--primary md-nav--lifted" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="fangxh's Notebook" class="md-nav__button md-logo" data-md-component="logo" href="../../.." title="fangxh's Notebook">
+<img alt="logo" src="../../../log.ico"/>
+</a>
+    fangxh's Notebook
+  </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_1" type="checkbox"/>
+<div class="md-nav__link md-nav__container">
+<a class="md-nav__link" href="../../..">
+<span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+</a>
+</div>
+<nav aria-expanded="false" aria-labelledby="__nav_1_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_1">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Home
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    推荐系统
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_2_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_2">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    推荐系统
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../00%20%E7%9B%AE%E5%BD%95/">
+<span class="md-ellipsis">
+    
+  
+    00 目录
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../02%20Retrieval/">
+<span class="md-ellipsis">
+    
+  
+    02 Retrieval
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../03%20Ranking/">
+<span class="md-ellipsis">
+    
+  
+    03 Ranking
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../04%20Reranking/">
+<span class="md-ellipsis">
+    
+  
+    04 Reranking
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../05%20%E9%9A%BE%E7%82%B9%E5%8F%8A%E7%83%AD%E7%82%B9%E7%A0%94%E7%A9%B6/">
+<span class="md-ellipsis">
+    
+  
+    05 难点及热点研究
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="目录" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#framework">
+<span class="md-ellipsis">
+      
+        Framework
+      
+    </span>
+</a>
+<nav aria-label="Framework" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#feature-based-paradigm">
+<span class="md-ellipsis">
+      
+        Feature-Based Paradigm
+      
+    </span>
+</a>
+<nav aria-label="Feature-Based Paradigm" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#fm-tokens">
+<span class="md-ellipsis">
+      
+        FM Tokens
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#fm-embeddings">
+<span class="md-ellipsis">
+      
+        FM Embeddings
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#generative-paradigm">
+<span class="md-ellipsis">
+      
+        Generative Paradigm
+      
+    </span>
+</a>
+<nav aria-label="Generative Paradigm" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#fine-tuning-fm4rs">
+<span class="md-ellipsis">
+      
+        Fine-tuning FM4RS
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#non-tuning-fm4rs">
+<span class="md-ellipsis">
+      
+        Non-tuning FM4RS
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#pre-trained-fm4rs">
+<span class="md-ellipsis">
+      
+        Pre-trained FM4RS
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#agentic-paradigm">
+<span class="md-ellipsis">
+      
+        Agentic Paradigm
+      
+    </span>
+</a>
+<nav aria-label="Agentic Paradigm" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#agent-as-rs">
+<span class="md-ellipsis">
+      
+        Agent as RS
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#agent-as-user-simulator">
+<span class="md-ellipsis">
+      
+        Agent as User Simulator
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1>A Survey of Foundation Model Powered Recommender Systems：From Feature Based, Generative to Agentic Paradigms</h1>
+<div style="margin-top: -30px; font-size: 0.75em; opacity: 0.7;">
+<p><span class="twemoji"><svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2A10 10 0 0 0 2 12a10 10 0 0 0 10 10 10 10 0 0 0 10-10h-2a8 8 0 0 1-8 8 8 8 0 0 1-8-8 8 8 0 0 1 8-8zm6.78 1a.7.7 0 0 0-.48.2l-1.22 1.21 2.5 2.5L20.8 5.7c.26-.26.26-.7 0-.95L19.25 3.2c-.13-.13-.3-.2-.47-.2m-2.41 2.12L9 12.5V15h2.5l7.37-7.38z"></path></svg></span> 约<span class="heti-skip"><span class="heti-spacing"> </span>3790<span class="heti-spacing"> </span></span>个字 <span class="twemoji"><svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M21 17H7V3h14m0-2H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2M3 5H1v16a2 2 0 0 0 2 2h16v-2H3m12.96-10.71-2.75 3.54-1.96-2.36L8.5 15h11z"></path></svg></span> <span>1<span class="heti-spacing"> </span></span>张图片 <span class="twemoji"><svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 20c4.42 0 8-3.58 8-8s-3.58-8-8-8-8 3.58-8 8 3.58 8 8 8m0-18c5.5 0 10 4.5 10 10s-4.5 10-10 10C6.47 22 2 17.5 2 12S6.5 2 12 2m.5 11H11V7h1.5v4.26l3.7-2.13.75 1.3z"></path></svg></span> 预计阅读时间<span class="heti-skip"><span class="heti-spacing"> </span>13<span class="heti-spacing"> </span></span>分钟</p>
+</div>
+<p><strong class="hash">LLM4Rec</strong> </p>
+<p>概念辨析：</p>
+<ul>
+<li>流行度偏差<span><span class="heti-spacing"> </span>Popularity Bias</span>：倾向于推荐那些<strong>大众熟知、热度很高</strong>的物品，而不是真正符合用户独特个性的小众物品 👈 预训练数据中热门物品频率高</li>
+<li>对地理区域的敏感性<span><span class="heti-spacing"> </span>Sensitivity to Geographical Regions</span>：特定区域和文化的偏斜 👈 训练数据不平衡</li>
+<li>数据稀疏：<span>User<span class="heti-spacing"> </span></span>仅与海量<span class="heti-skip"><span class="heti-spacing"> </span>Item<span class="heti-spacing"> </span></span>中的少部分进行过<span><span class="heti-spacing"> </span>Interaction</span></li>
+<li>跨域推荐：迁移学习 👉 目标域的<span class="heti-skip"><span class="heti-spacing"> </span>Data<span class="heti-spacing"> </span></span>不足，通过源域的<span><span class="heti-spacing"> </span>Data</span>，学习并迁移至目标域的<span><span class="heti-spacing"> </span>Data</span></li>
+</ul>
+<figure>
+<img alt="public/Pasted image 20260121132434.png" src="../public/Pasted%20image%2020260121132434.png" width="500"/>
+</figure>
+<h2 id="framework">Framework<a class="headerlink" href="#framework" title="Permanent link">¶</a></h2>
+<h3 id="feature-based-paradigm">Feature-Based Paradigm<a class="headerlink" href="#feature-based-paradigm" title="Permanent link">¶</a></h3>
+<h4 id="fm-tokens">FM Tokens<a class="headerlink" href="#fm-tokens" title="Permanent link">¶</a></h4>
+<p>这一范式的核心任务是基于物品和用户的特征生成令牌（Tokens<heti-adjacent class="heti-adjacent-half">）</heti-adjacent>，而不是依赖任意分配的数字编号。这种建模范式基于输入物品和用户的特征生成令牌这些生成的令牌旨在通过语义挖掘来捕捉潜在的用户偏好，从而可以将其<strong>直接整合到推荐系统的决策过程</strong>中</p>
+<ul>
+<li><span>Token<span class="heti-spacing"> </span></span>和<span class="heti-skip"><span class="heti-spacing"> </span>Embedding<span class="heti-spacing"> </span></span>的差异？
+  离散 Token 本身可以直接整合到传统的推荐系统中</li>
+</ul>
+<p>传统推荐系统主要面临的挑战是它们依赖于毫无语义的数字<span><span class="heti-spacing"> </span>ID</span>（例如<span><span class="heti-spacing"> </span>"item 57"</span>）来表示用户和物品。这种<span class="heti-skip"><span class="heti-spacing"> </span>ID<span class="heti-spacing"> </span></span>缺乏语义信息，无法利用基础模型（FMs）中蕴含的丰富知识。此外，由于这些<span class="heti-skip"><span class="heti-spacing"> </span>ID<span class="heti-spacing"> </span></span>没有内在含义，模型通常需要大量的交互数据才能微调出有效的表示，这限制了其在冷启动、跨域推荐等场景中的泛化能力。这导致了基础模型的语言能力与推荐系统所需的协同信号之间存在“语义鸿沟”。<span>LC-Rec<span class="heti-spacing"> </span></span>模型致力于解决大型语言模型与推荐系统之间的这一语义鸿沟</p>
+<p>主要的洞察是利用 <strong>语义<span><span class="heti-spacing"> </span>ID (Semantic IDs)</span></strong> 来弥合基础模型与推荐系统之间的差距。语义<span class="heti-skip"><span class="heti-spacing"> </span>ID<span class="heti-spacing"> </span></span>是从物品的实际内容（如标题、描述）中衍生出的标识符，而非随机分配的数字</p>
+<p>通过这种方式，推荐任务被重构为 <strong>生成式检索<span><span class="heti-spacing"> </span>(Generative Retrieval)</span></strong> 问题。在这个框架下，模型不再仅仅是对固定的候选集进行排序，而是以自回归的方式解码出目标物品的标识符，从而使其能够直接从整个物品集中生成物品，而不依赖预定义的候选集</p>
+<p>这一类别的方法通常采用 <strong>语义<span><span class="heti-spacing"> </span>ID (Semantic IDs)</span></strong> 或 <strong>矢量量化<span><span class="heti-spacing"> </span>(Vector Quantization)</span></strong> 来创建基础模型可以处理的有意义令牌：</p>
+<ul>
+<li><strong>生成式检索<span class="heti-skip"><span class="heti-spacing"> </span>(<span class="heti-spacing"> </span></span>如<span><span class="heti-spacing"> </span>TIGER):</span></strong> 该框架提出了一种生成式检索方法，自回归地解码物品标识符。在该框架中，每个物品被分配一个“语义<span><span class="heti-spacing"> </span>ID</span>”——这是一组源自物品内容特征的码字（codewords<heti-adjacent class="heti-adjacent-half">）</heti-adjacent>。 <alphaxiv-paper-citation first="framework proposes a" last="item identifiers." page="9" title="语义 ID"></alphaxiv-paper-citation></li>
+<li><strong>矢量量化<span class="heti-skip"><span class="heti-spacing"> </span>(<span class="heti-spacing"> </span></span>如<span><span class="heti-spacing"> </span>LC-Rec):</span></strong> 该方法使用基于学习的矢量量化方法来分配有意义的物品索引，通过整合语言和协同语义来解决语义鸿沟问题。 <alphaxiv-paper-citation first="employs a learning-based" last="item indices," page="9" title="矢量量化"></alphaxiv-paper-citation></li>
+<li><strong>统一生成框架<span class="heti-skip"><span class="heti-spacing"> </span>(<span class="heti-spacing"> </span></span>如<span><span class="heti-spacing"> </span>ColaRec, EAGER):</span></strong> <span>ColaRec<span class="heti-spacing"> </span></span>等框架在一个统一的序列到序列（Seq2Seq）生成框架中结合了内容信息和协同信号。 <alphaxiv-paper-citation first="content information and" last="generative framework," page="9" title="统一框架"></alphaxiv-paper-citation></li>
+<li><strong>级联方法<span class="heti-skip"><span class="heti-spacing"> </span>(<span class="heti-spacing"> </span></span>如<span><span class="heti-spacing"> </span>COBRA):</span></strong> <span>COBRA<span class="heti-spacing"> </span></span>框架采用级联方法，在稀疏的语义<span class="heti-skip"><span class="heti-spacing"> </span>ID<span class="heti-spacing"> </span></span>和密集的向量之间交替，以同时捕捉语义洞察和来自用户<span class="heti-skip"><span class="heti-spacing"> </span>-<span class="heti-spacing"> </span></span>物品交互的协同信号。 <alphaxiv-paper-citation first="framework adopts a" last="collaborative signals" page="9" title="级联方法"></alphaxiv-paper-citation></li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">论文</th>
+<th style="text-align: left;">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><a href="https://arxiv.org/abs/2305.05065">TIGER: Recommender Systems with Generative Retrieval</a></td>
+<td style="text-align: left;">使用“语义<span><span class="heti-spacing"> </span>ID</span>”（源自内容的码字）来实现物品推荐的自回归解码</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://arxiv.org/abs/2311.09049">LC-Rec: Adapting Large Language Models by Integrating Collaborative Semantics</a></td>
+<td style="text-align: left;">使用矢量量化分配有意义的索引，弥合<span class="heti-skip"><span class="heti-spacing"> </span>LLM<span class="heti-spacing"> </span></span>和推荐系统之间的语义鸿沟</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://arxiv.org/abs/2403.18480">ColaRec: Content-Based Collaborative Generation for Recommender Systems</a></td>
+<td style="text-align: left;">在<span class="heti-skip"><span class="heti-spacing"> </span>Seq2Seq<span class="heti-spacing"> </span></span>框架中统一了内容知识和协同信号</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://arxiv.org/abs/2406.14017">EAGER: Two-Stream Generative Recommender with Behavior-Semantic Collaboration</a></td>
+<td style="text-align: left;">通过双流生成架构整合行为信息和语义信息</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://arxiv.org/abs/2503.02453">COBRA: Sparse Meets Dense: Unified Generative Recommendations</a></td>
+<td style="text-align: left;">在稀疏语义<span class="heti-skip"><span class="heti-spacing"> </span>ID<span class="heti-spacing"> </span></span>和密集向量之间交替，以捕捉语义和交互信号</td>
+</tr>
+</tbody>
+</table>
+<h4 id="fm-embeddings">FM Embeddings<a class="headerlink" href="#fm-embeddings" title="Permanent link">¶</a></h4>
+<p>这一范式的核心任务是将基础模型（FMs）视为<strong>特征提取器（Feature Extractor）</strong></p>
+<p>具体而言，它将物品和用户的特征（如文本描述、元数据）输入到大型语言模型（LLMs）中，并利用<span class="heti-skip"><span class="heti-spacing"> </span>LLM<span class="heti-spacing"> </span></span>输出的高质量嵌入向量（Embeddings）作为推荐模型的输入特征。此建模范式将语言模型视为特征提取器，将物品和用户的特征输入到<span class="heti-skip"><span class="heti-spacing"> </span>LLM<span class="heti-spacing"> </span></span>中并输出相应的嵌入</p>
+<p>传统的推荐系统主要面临两大挑战：</p>
+<ol>
+<li><strong>隐式反馈稀疏性</strong>：用户与物品的交互（点击、购买）数据往往非常稀疏，难以捕捉准确的用户偏好。这项工作解决了隐式反馈信号稀疏的问题</li>
+<li><strong>缺乏语义深度</strong>：传统的<span class="heti-skip"><span class="heti-spacing"> </span>ID<span class="heti-spacing"> </span></span>嵌入（如<span><span class="heti-spacing"> </span>One-hot</span>）或浅层语义嵌入无法充分理解内容中的复杂语义，也难以利用物品之间潜在的关联知识</li>
+</ol>
+<p>使用<span class="heti-skip"><span class="heti-spacing"> </span>FMs<span class="heti-spacing"> </span></span>生成嵌入的主要动机在于利用基础模型强大的<strong>文本理解和推理能力</strong>。</p>
+<ul>
+<li><strong>语义理解</strong>：<span>FMs<span class="heti-spacing"> </span></span>可以捕捉用户行为和偏好中细微的语义特征，而不仅仅是基于<span class="heti-skip"><span class="heti-spacing"> </span>ID<span class="heti-spacing"> </span></span>的共现关系。利用<span class="heti-skip"><span class="heti-spacing"> </span>LLM<span class="heti-spacing"> </span></span>先进的文本理解能力来捕捉用户行为和偏好的细微语义方面</li>
+<li><strong>显式推理</strong>：<span>LLM<span class="heti-spacing"> </span></span>能够显式地推理用户与物品之间的交互模式，从而增强对协同信息的建模。通过让<span class="heti-skip"><span class="heti-spacing"> </span>LLM<span class="heti-spacing"> </span></span>显式推理用户<span class="heti-skip"><span class="heti-spacing"> </span>-<span class="heti-spacing"> </span></span>物品交互模式来解决隐式反馈信号稀疏的问题 </li>
+<li><strong>知识增强</strong>：<span>FMs<span class="heti-spacing"> </span></span>拥有广泛的世界知识，可以为物品生成更丰富的描述或补充缺失的元数据</li>
+</ul>
+<p>该范式通常通过将<span class="heti-skip"><span class="heti-spacing"> </span>FMs<span class="heti-spacing"> </span></span>的嵌入与传统推荐模型（如协同过滤、图神经网络）相结合。典型的方法包括：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">方法</th>
+<th style="text-align: left;">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>RLMRec</strong> (<a href="https://arxiv.org/abs/2310.15950">arXiv</a>)</td>
+<td style="text-align: left;">将<span class="heti-skip"><span class="heti-spacing"> </span>LLM<span class="heti-spacing"> </span></span>视为文本编码器，将物品<span class="heti-skip"><span class="heti-spacing"> </span>/<span class="heti-spacing"> </span></span>用户映射到语义空间，并将语义空间与协同关系建模对齐</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>AlphaRec</strong> (<a href="https://arxiv.org/abs/2407.05441">arXiv</a>)</td>
+<td style="text-align: left;">采用线性映射将物品标题的语言表示投影到推荐行为空间中</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>LLMRec</strong> (<a href="https://arxiv.org/abs/2311.00423">arXiv</a>)</td>
+<td style="text-align: left;">利用<span class="heti-skip"><span class="heti-spacing"> </span>LLM<span class="heti-spacing"> </span></span>进行图增强（Graph Augmentation<heti-adjacent class="heti-adjacent-half">）</heti-adjacent>，包括增强用户<span class="heti-skip"><span class="heti-spacing"> </span>-<span class="heti-spacing"> </span></span>物品交互边、物品节点属性和用户画像</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>BinLLM</strong> (<a href="https://arxiv.org/abs/2311.09049">arXiv</a>)</td>
+<td style="text-align: left;">将协同嵌入转换为二进制序列（文本格式<heti-adjacent class="heti-adjacent-half">）</heti-adjacent>，使<span class="heti-skip"><span class="heti-spacing"> </span>LLM<span class="heti-spacing"> </span></span>能够直接以文本形式利用协同信息</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>iDreamRec</strong></td>
+<td style="text-align: left;">将<span class="heti-skip"><span class="heti-spacing"> </span>LLM<span class="heti-spacing"> </span></span>嵌入与扩散模型（Diffusion Models）结合，利用<span class="heti-skip"><span class="heti-spacing"> </span>GPT<span class="heti-spacing"> </span></span>生成详细的文本描述以模拟物品分布</td>
+</tr>
+</tbody>
+</table>
+<h3 id="generative-paradigm">Generative Paradigm<a class="headerlink" href="#generative-paradigm" title="Permanent link">¶</a></h3>
+<h4 id="fine-tuning-fm4rs">Fine-tuning FM4RS<a class="headerlink" href="#fine-tuning-fm4rs" title="Permanent link">¶</a></h4>
+<p>这一范式的核心任务是<strong>将通用的大型基础模型（FMs）适配为特定领域的推荐模型</strong></p>
+<p>具体而言，它不仅利用<span class="heti-skip"><span class="heti-spacing"> </span>FMs<span class="heti-spacing"> </span></span>作为特征提取器或零样本推理机，而是使用特定领域的推荐数据（如用户交互历史、点击日志、评分数据）对模型的参数进行<strong>微调（Fine-tuning）</strong>，使其学习推荐任务的特定模式。该范式使用特定任务的数据微调强大的<span><span class="heti-spacing"> </span>FMs</span></p>
+<p>直接使用预训练的<span class="heti-skip"><span class="heti-spacing"> </span>FMs<span class="heti-spacing"> </span></span>进行推荐面临两个主要挑战：</p>
+<ol>
+<li><strong>领域适配不足</strong>：尽管<span class="heti-skip"><span class="heti-spacing"> </span>FMs<span class="heti-spacing"> </span></span>拥有丰富的世界知识，但它们缺乏对特定推荐领域（如电商点击率预测）的细粒度理解，导致在特定任务上的表现不如专门训练的小模型。<span>FMs<span class="heti-spacing"> </span></span>可能无法胜过针对任务相关数据专门训练的推荐模型</li>
+<li><strong>输入输出不匹配</strong>：通用<span class="heti-skip"><span class="heti-spacing"> </span>FMs<span class="heti-spacing"> </span></span>通常设计为处理自然语言任务，而推荐系统通常依赖于稀疏的<span class="heti-skip"><span class="heti-spacing"> </span>ID<span class="heti-spacing"> </span></span>特征和协同信号，直接使用<span class="heti-skip"><span class="heti-spacing"> </span>FMs<span class="heti-spacing"> </span></span>难以有效整合这些异构数据</li>
+</ol>
+<p>微调<span class="heti-skip"><span class="heti-spacing"> </span>FMs<span class="heti-spacing"> </span></span>的动机在于结合<strong>通用知识</strong>与<strong>领域专长</strong></p>
+<ul>
+<li><strong>知识迁移</strong>：通过微调，可以将<span class="heti-skip"><span class="heti-spacing"> </span>FMs<span class="heti-spacing"> </span></span>中蕴含的广泛世界知识（如物品的背景知识、常识推理能力）迁移到推荐任务中，特别是在冷启动场景下表现优异。<span>TallRec<span class="heti-spacing"> </span></span>展示了对冷启动推荐的有效性</li>
+<li><strong>指令遵循</strong>：通过指令微调（Instruction Tuning<heti-adjacent class="heti-adjacent-half">）</heti-adjacent>，可以让<span class="heti-skip"><span class="heti-spacing"> </span>FMs<span class="heti-spacing"> </span></span>理解各种推荐任务的指令（如“根据历史推荐电影”<heti-adjacent class="heti-adjacent-quarter">、</heti-adjacent>“解释推荐理由”<heti-adjacent class="heti-adjacent-half">）</heti-adjacent>，从而实现多任务统一建模。<span>LLMs<span class="heti-spacing"> </span></span>可以理解并遵循不同的推荐指令</li>
+</ul>
+<p>该范式通常涉及两种微调策略：</p>
+<ol>
+<li><strong>全参数微调<span><span class="heti-spacing"> </span>(Full Fine-tuning)</span></strong>：调整模型的所有参数，但计算成本极高</li>
+<li><strong>高效参数微调<span><span class="heti-spacing"> </span>(PEFT)</span></strong>：如<span><span class="heti-spacing"> </span>LoRA (Low-Rank Adaptation)</span>，只调整少量参数，大大降低了计算资源需求</li>
+</ol>
+<p>典型的方法包括：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">方法</th>
+<th style="text-align: left;">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>InstructRec</strong> (<a href="https://arxiv.org/abs/2305.07001">arXiv</a>)</td>
+<td style="text-align: left;">设计了大量指令模板（如偏好、意图、任务形式<heti-adjacent class="heti-adjacent-half">）</heti-adjacent>，通过指令微调使<span class="heti-skip"><span class="heti-spacing"> </span>LLM<span class="heti-spacing"> </span></span>能够适应不同的推荐任务。 <alphaxiv-paper-citation first="designs abundant instructions" last="context of a user." page="10" title="InstructRec"></alphaxiv-paper-citation></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>TallRec</strong> (<a href="https://arxiv.org/abs/2305.00447">arXiv</a>)</td>
+<td style="text-align: left;">使用 <strong>LoRA</strong> 进行两阶段微调：先在通用指令数据（Alpaca）上微调，再在推荐数据上微调，有效提升了少样本和冷启动性能。 <alphaxiv-paper-citation first="uses LoRA, a" last="information of users." page="10" title="TallRec"></alphaxiv-paper-citation></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>BIGRec</strong> (<a href="https://arxiv.org/abs/2305.00447">arXiv</a>)</td>
+<td style="text-align: left;">针对<span class="heti-skip"><span class="heti-spacing"> </span>LLM<span class="heti-spacing"> </span></span>难以整合统计数据（如流行度、协同过滤信号）的问题，通过微调将这些信号注入到生成过程中。 <alphaxiv-paper-citation first="BIGRec fine-tunes" last="collaborative filtering" page="10" title="BIGRec"></alphaxiv-paper-citation></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>TCF</strong></td>
+<td style="text-align: left;">微调<span class="heti-skip"><span class="heti-spacing"> </span>LLM<span class="heti-spacing"> </span></span>以创建通用的物品表示，尽管其仍然面临新数据适应性的挑战。 <alphaxiv-paper-citation first="fine-tunes LLMs to" last="recommendation tasks," page="10" title="TCF"></alphaxiv-paper-citation></td>
+</tr>
+</tbody>
+</table>
+<h4 id="non-tuning-fm4rs">Non-tuning FM4RS<a class="headerlink" href="#non-tuning-fm4rs" title="Permanent link">¶</a></h4>
+<p>这一范式的核心任务是<strong>在不更新模型参数的情况下，通过提示工程（Prompt Engineering）直接激活基础模型（FMs）的推荐能力</strong></p>
+<p>具体来说，它通过精心设计包含用户画像、历史行为、任务指令等信息的提示（Prompts<heti-adjacent class="heti-adjacent-half">）</heti-adjacent>，引导预训练的大语言模型（LLMs）执行推荐任务（如排序、评分预测、解释生成<heti-adjacent class="heti-adjacent-half">）</heti-adjacent>。<span>Non-tuning FM4RecSys<span class="heti-spacing"> </span></span>专注于设计适当的提示，以激发<span class="heti-skip"><span class="heti-spacing"> </span>LLM<span class="heti-spacing"> </span></span>的推荐能力</p>
+<p>尽管<span class="heti-skip"><span class="heti-spacing"> </span>FMs<span class="heti-spacing"> </span></span>具有强大的通用能力，但直接将其用于推荐面临以下挑战：</p>
+<ol>
+<li><strong>位置偏差与顺序感知不足</strong>：<span>LLMs<span class="heti-spacing"> </span></span>对输入序列中的顺序和位置非常敏感，往往倾向于推荐出现在提示末尾或特定位置的物品，且难以准确捕捉长序列中的时序依赖。<span>LLMs<span class="heti-spacing"> </span></span>往往难以感知历史交互序列的顺序</li>
+<li><strong>性能差距</strong>：在序列推荐等任务上，仅依赖上下文学习（In-context Learning）的<span class="heti-skip"><span class="heti-spacing"> </span>LLMs<span class="heti-spacing"> </span></span>通常不如专门训练的监督学习模型（如<span><span class="heti-spacing"> </span>SASRec</span><heti-adjacent class="heti-adjacent-half">）</heti-adjacent>，尤其是随着序列长度增加，性能会下降。<span>LLMs<span class="heti-spacing"> </span></span>的表现仍落后于<span class="heti-skip"><span class="heti-spacing"> </span>SASRec<span class="heti-spacing"> </span></span>等传统监督方法</li>
+</ol>
+<p>该范式的核心动机在于利用<span class="heti-skip"><span class="heti-spacing"> </span>FMs<span class="heti-spacing"> </span></span>强大的 <strong>零样本（Zero-shot）</strong> 和 <strong>少样本（Few-shot）</strong> 学习能力</p>
+<ul>
+<li><strong>无需训练</strong>：<span>FMs<span class="heti-spacing"> </span></span>已经在大规模语料上预训练，蕴含了丰富的世界知识和逻辑推理能力。研究者假设<span class="heti-skip"><span class="heti-spacing"> </span>FMs<span class="heti-spacing"> </span></span>本身具备推荐潜力，只需通过合适的提示即可“唤醒”这些能力，从而避免昂贵的微调成本。<span>FMs<span class="heti-spacing"> </span></span>固有地拥有推荐能力，旨在通过定制提示来激活这些能力</li>
+<li><strong>上下文学习</strong>：通过在提示中提供示例（Few-shot）或特定的推理策略，模型可以根据上下文快速适应新任务</li>
+</ul>
+<p>该范式主要依靠<strong>提示工程（Prompt Engineering）</strong>和<strong>上下文学习（In-context Learning）</strong>策略：</p>
+<ol>
+<li><strong>提示设计框架</strong>：构建包含任务描述、用户行为、候选物品的结构化提示。例如，<span>Liu et al.<span class="heti-spacing"> </span></span>提出了一个评估<span class="heti-skip"><span class="heti-spacing"> </span>ChatGPT<span class="heti-spacing"> </span></span>推荐能力的提示构建框架</li>
+<li><strong>增强策略</strong>：<ul>
+<li><strong>近因聚焦提示<span><span class="heti-spacing"> </span>(Recency-focused Prompting)</span></strong>：强调最近的交互，以缓解模型对顺序感知的不足</li>
+<li><strong>上下文学习<span><span class="heti-spacing"> </span>(In-context Learning)</span></strong>：在提示中加入少量的推荐示例（Few-shot<heti-adjacent class="heti-adjacent-half">）</heti-adjacent>，帮助模型理解任务模式</li>
+<li><strong>启发式提示</strong>：结合协同过滤信息、知识图谱推理路径等辅助信息来增强提示的丰富度</li>
+</ul>
+</li>
+</ol>
+<ul>
+<li><strong>ChatGPT Evaluation Framework</strong>: Liu et al. [arXiv: 2305.02182]</li>
+<li><strong>Large Language Models are Zero-Shot Rankers</strong><span>: Hou et al. [arXiv: 2305.08845] (<span class="heti-spacing"> </span></span>提出了<span><span class="heti-spacing"> </span>Recency-focused prompting)</span></li>
+<li><strong>Prompting Large Language Models for Recommender Systems</strong>: Zhang et al. [arXiv: 2401.04997]</li>
+</ul>
+<h4 id="pre-trained-fm4rs">Pre-trained FM4RS<a class="headerlink" href="#pre-trained-fm4rs" title="Permanent link">¶</a></h4>
+<p>这一范式的核心任务是<strong>从头开始（或基于现有架构）在大规模推荐数据集上预训练一个基础模型</strong>，使其能够直接处理各种下游推荐任务</p>
+<p>与仅使用通用语料训练的<span class="heti-skip"><span class="heti-spacing"> </span>LLMs<span class="heti-spacing"> </span></span>不同，这些模型专门针对推荐数据（如用户行为序列、商品元数据）进行预训练，旨在学习通用的用户偏好表示和物品语义。该范式旨在预训练一个通用的推荐引擎</p>
+<p>传统的推荐模型通常是<strong>针对特定任务或特定领域训练的</strong>（Task-specific &amp; Domain-specific）</p>
+<ol>
+<li><strong>缺乏泛化性</strong>：在一个数据集上训练的模型很难迁移到另一个领域（如从电影推荐迁移到书籍推荐）</li>
+<li><strong>多任务割裂</strong>：不同的推荐任务（如评分预测、序列推荐、解释生成）通常需要不同的模型架构，难以统一建模</li>
+<li><strong>冷启动问题</strong>：依赖<span class="heti-skip"><span class="heti-spacing"> </span>ID<span class="heti-spacing"> </span></span>的模型在面对新用户或新物品时表现不佳</li>
+</ol>
+<p>该范式的核心动机在于构建一个<strong>统一的、多任务的推荐基础模型</strong></p>
+<ul>
+<li><strong>统一范式</strong>：通过将所有推荐任务转化为统一的格式（如自然语言序列生成<heti-adjacent class="heti-adjacent-half">）</heti-adjacent>，可以使用同一个模型处理排序、检索、解释等多种任务。<span>P5<span class="heti-spacing"> </span></span>将所有任务统一为自然语言序列生成</li>
+<li><strong>跨域迁移</strong>：利用大规模多领域数据的预训练，模型可以学习到跨领域的通用知识和用户行为模式，从而实现零样本或少样本迁移</li>
+<li><strong>通用表示</strong>：通过学习通用的序列表示，模型不再受限于特定的<span><span class="heti-spacing"> </span>Item ID</span>，而是可以基于内容（如文本描述）进行推荐</li>
+</ul>
+<p>该范式通常采用 <strong>Transformer</strong> 架构，并利用 <strong>自监督学习（Self-Supervised Learning）</strong> 任务进行预训练。常见的方法包括：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">方法</th>
+<th style="text-align: left;">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>P5 (Pretrain, Personalized Prompt, Predict Paradigm)</strong> (<a href="https://arxiv.org/abs/2203.13366">arXiv</a>)</td>
+<td style="text-align: left;">将各类推荐任务（如评分、解释、序列推荐）统一为自然语言输入输出，通过个性化提示进行多任务预训练。 <alphaxiv-paper-citation first="P5 unifies various" last="personalized prompts." page="10" title="P5 模型"></alphaxiv-paper-citation></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>M6-Rec</strong> (<a href="https://arxiv.org/abs/2205.08084">arXiv</a>)</td>
+<td style="text-align: left;">基于<span class="heti-skip"><span class="heti-spacing"> </span>M6<span class="heti-spacing"> </span></span>模型，将推荐任务（如检索、排序、解释）统一为文本生成任务，支持少样本和跨域推荐。 <alphaxiv-paper-citation first="M6-Rec unifies" last="text generation tasks." page="10" title="M6-Rec"></alphaxiv-paper-citation></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>UniSRec</strong> (<a href="https://arxiv.org/abs/2206.05941">arXiv</a>)</td>
+<td style="text-align: left;">学习通用的序列表示，通过对比学习对齐物品的文本描述和协同信号，从而摆脱对特定<span class="heti-skip"><span class="heti-spacing"> </span>ID<span class="heti-spacing"> </span></span>的依赖。 <alphaxiv-paper-citation first="learns universal sequence" last="ID dependence." page="10" title="UniSRec"></alphaxiv-paper-citation></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>RecFormer</strong> (<a href="https://arxiv.org/abs/2306.05817">arXiv</a>)</td>
+<td style="text-align: left;">将物品视为句子，利用双向<span class="heti-skip"><span class="heti-spacing"> </span>Transformer<span class="heti-spacing"> </span></span>学习语言表示，用于序列推荐。 <alphaxiv-paper-citation first="treats items as" last="sequential recommendation." page="10" title="RecFormer"></alphaxiv-paper-citation></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>PTUM</strong> (<a href="https://arxiv.org/abs/2010.01494">arXiv</a>)</td>
+<td style="text-align: left;">通过掩码行为预测和下一<span class="heti-skip"><span class="heti-spacing"> </span>K<span class="heti-spacing"> </span></span>行为预测等自监督任务，从无标签的用户行为中预训练用户模型。 <alphaxiv-paper-citation first="pre-trains user models" last="unlabeled user behaviors." page="10" title="PTUM"></alphaxiv-paper-citation></td>
+</tr>
+</tbody>
+</table>
+<h3 id="agentic-paradigm">Agentic Paradigm<a class="headerlink" href="#agentic-paradigm" title="Permanent link">¶</a></h3>
+<h4 id="agent-as-rs">Agent as RS<a class="headerlink" href="#agent-as-rs" title="Permanent link">¶</a></h4>
+<h4 id="agent-as-user-simulator">Agent as User Simulator<a class="headerlink" href="#agent-as-user-simulator" title="Permanent link">¶</a></h4>
+<aside class="md-source-file">
+<span class="md-source-file__fact">
+<span class="md-icon" title="最后更新">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
+</span>
+<span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-datetime" title="2026年2月18日 23:35:04 CST">2026年2月18日 23:35:04</span>
+</span>
+<span class="md-source-file__fact">
+<span class="md-icon" title="创建日期">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M14.47 15.08 11 13V7h1.5v5.25l3.08 1.83c-.41.28-.79.62-1.11 1m-1.39 4.84c-.36.05-.71.08-1.08.08-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8c0 .37-.03.72-.08 1.08.69.1 1.33.32 1.92.64.1-.56.16-1.13.16-1.72 0-5.5-4.5-10-10-10S2 6.5 2 12s4.47 10 10 10c.59 0 1.16-.06 1.72-.16-.32-.59-.54-1.23-.64-1.92M18 15v3h-3v2h3v3h2v-3h3v-2h-3v-3z"></path></svg>
+</span>
+<span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-datetime" title="2026年2月18日 23:35:04 CST">2026年2月18日 23:35:04</span>
+</span>
+</aside>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  回到页面顶部
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["content.code.annotate", "navigation.tracking", "navigation.tabs", "navigation.indexes", "navigation.top"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+<script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../../js/baidu-tongji.js"></script>
+<script src="https://gcore.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js"></script>
+<script src="../../../js/katex.js"></script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</body>
+</html>

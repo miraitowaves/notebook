@@ -1,0 +1,1478 @@
+<!DOCTYPE html>
+<html class="no-js" lang="zh">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="fangxh's Notebook" name="description"/>
+<link href="../02%20Retrieval/" rel="prev"/>
+<link href="../04%20Reranking/" rel="next"/>
+<link href="../../log.ico" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.2" name="generator"/>
+<title>03 Ranking - fangxh's Notebook</title>
+<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=LXGW+WenKai+Screen:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"LXGW WenKai Screen";--md-code-font:"JetBrains Mono"}</style>
+<link href="../../css/timeline.css" rel="stylesheet"/>
+<link href="../../css/heti.css" rel="stylesheet"/>
+<link href="https://gcore.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css" rel="stylesheet"/>
+<link href="https://gcore.jsdelivr.net/npm/lxgw-wenkai-screen-webfont@1.1.0/style.css" rel="stylesheet"/>
+<link href="https://gcore.jsdelivr.net/npm/lxgw-wenkai-webfont@1.1.0/style.css" rel="stylesheet"/>
+<link href="../../css/custom.css" rel="stylesheet"/>
+<link href="../../css/card.css" rel="stylesheet"/>
+<link href="../../css/tasklist.css" rel="stylesheet"/>
+<link href="../../css/flink.css" rel="stylesheet"/>
+<link href="../../css/more_changelog.css" rel="stylesheet"/>
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body data-md-color-accent="amber" data-md-color-primary="light-green" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#01">
+          跳转至
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header" data-md-component="header">
+<nav aria-label="页眉" class="md-header__inner md-grid">
+<a aria-label="fangxh's Notebook" class="md-header__button md-logo" data-md-component="logo" href="../.." title="fangxh's Notebook">
+<img alt="logo" src="../../log.ico"/>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            fangxh's Notebook
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              03 Ranking
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="amber" data-md-color-media="(prefers-color-scheme: light)" data-md-color-primary="light-green" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"></path></svg>
+</label>
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-primary="indigo" data-md-color-scheme="slate" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"></path></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="搜索" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="搜索" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+</label>
+<nav aria-label="查找" class="md-search__options">
+<button aria-label="清空当前内容" class="md-search__icon md-icon" tabindex="-1" title="清空当前内容" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="" tabindex="0">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<nav aria-label="标签" class="md-tabs" data-md-component="tabs">
+<div class="md-grid">
+<ul class="md-tabs__list">
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../..">
+          
+  
+  
+    
+  
+  Home
+
+        </a>
+</li>
+<li class="md-tabs__item md-tabs__item--active">
+<a class="md-tabs__link" href="../00%20%E7%9B%AE%E5%BD%95/">
+          
+  
+  
+    
+  
+  推荐系统
+
+        </a>
+</li>
+</ul>
+</div>
+</nav>
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="导航栏" class="md-nav md-nav--primary md-nav--lifted" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="fangxh's Notebook" class="md-nav__button md-logo" data-md-component="logo" href="../.." title="fangxh's Notebook">
+<img alt="logo" src="../../log.ico"/>
+</a>
+    fangxh's Notebook
+  </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_1" type="checkbox"/>
+<div class="md-nav__link md-nav__container">
+<a class="md-nav__link" href="../..">
+<span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+</a>
+</div>
+<nav aria-expanded="false" aria-labelledby="__nav_1_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_1">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Home
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+<span class="md-ellipsis">
+    
+  
+    推荐系统
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_2_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_2">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    推荐系统
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../00%20%E7%9B%AE%E5%BD%95/">
+<span class="md-ellipsis">
+    
+  
+    00 目录
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../02%20Retrieval/">
+<span class="md-ellipsis">
+    
+  
+    02 Retrieval
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" id="__toc" type="checkbox"/>
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+    
+  
+    03 Ranking
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a class="md-nav__link md-nav__link--active" href="./">
+<span class="md-ellipsis">
+    
+  
+    03 Ranking
+  
+
+    
+  </span>
+</a>
+<nav aria-label="目录" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#01">
+<span class="md-ellipsis">
+      
+        01 记忆与泛化
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#02">
+<span class="md-ellipsis">
+      
+        02 特征交叉
+      
+    </span>
+</a>
+<nav aria-label="02 特征交叉" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#21">
+<span class="md-ellipsis">
+      
+        2.1 二阶特征交叉
+      
+    </span>
+</a>
+<nav aria-label="2.1 二阶特征交叉" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#fm">
+<span class="md-ellipsis">
+      
+        FM
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#afm">
+<span class="md-ellipsis">
+      
+        AFM
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#nfm">
+<span class="md-ellipsis">
+      
+        NFM
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#03">
+<span class="md-ellipsis">
+      
+        03 序列建模
+      
+    </span>
+</a>
+<nav aria-label="03 序列建模" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#31">
+<span class="md-ellipsis">
+      
+        3.1 局部激活的注意力机制
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#32">
+<span class="md-ellipsis">
+      
+        3.2 兴趣的演化建模
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#33">
+<span class="md-ellipsis">
+      
+        3.3 从行为序列到会话序列
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#04">
+<span class="md-ellipsis">
+      
+        04 多目标建模
+      
+    </span>
+</a>
+<nav aria-label="04 多目标建模" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#41">
+<span class="md-ellipsis">
+      
+        4.1 基础结构演进
+      
+    </span>
+</a>
+<nav aria-label="4.1 基础结构演进" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#shared-bottom">
+<span class="md-ellipsis">
+      
+        Shared-Bottom
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#mmoe">
+<span class="md-ellipsis">
+      
+        MMoE
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ple">
+<span class="md-ellipsis">
+      
+        PLE
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#42">
+<span class="md-ellipsis">
+      
+        4.2 任务依赖建模
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#43">
+<span class="md-ellipsis">
+      
+        4.3 多目标损失融合
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#05">
+<span class="md-ellipsis">
+      
+        05 多场景建模
+      
+    </span>
+</a>
+<nav aria-label="05 多场景建模" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#51">
+<span class="md-ellipsis">
+      
+        5.1 多塔结构
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#52">
+<span class="md-ellipsis">
+      
+        5.2 动态权重建模
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../04%20Reranking/">
+<span class="md-ellipsis">
+    
+  
+    04 Reranking
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../05%20%E9%9A%BE%E7%82%B9%E5%8F%8A%E7%83%AD%E7%82%B9%E7%A0%94%E7%A9%B6/">
+<span class="md-ellipsis">
+    
+  
+    05 难点及热点研究
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="目录" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#01">
+<span class="md-ellipsis">
+      
+        01 记忆与泛化
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#02">
+<span class="md-ellipsis">
+      
+        02 特征交叉
+      
+    </span>
+</a>
+<nav aria-label="02 特征交叉" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#21">
+<span class="md-ellipsis">
+      
+        2.1 二阶特征交叉
+      
+    </span>
+</a>
+<nav aria-label="2.1 二阶特征交叉" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#fm">
+<span class="md-ellipsis">
+      
+        FM
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#afm">
+<span class="md-ellipsis">
+      
+        AFM
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#nfm">
+<span class="md-ellipsis">
+      
+        NFM
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#03">
+<span class="md-ellipsis">
+      
+        03 序列建模
+      
+    </span>
+</a>
+<nav aria-label="03 序列建模" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#31">
+<span class="md-ellipsis">
+      
+        3.1 局部激活的注意力机制
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#32">
+<span class="md-ellipsis">
+      
+        3.2 兴趣的演化建模
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#33">
+<span class="md-ellipsis">
+      
+        3.3 从行为序列到会话序列
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#04">
+<span class="md-ellipsis">
+      
+        04 多目标建模
+      
+    </span>
+</a>
+<nav aria-label="04 多目标建模" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#41">
+<span class="md-ellipsis">
+      
+        4.1 基础结构演进
+      
+    </span>
+</a>
+<nav aria-label="4.1 基础结构演进" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#shared-bottom">
+<span class="md-ellipsis">
+      
+        Shared-Bottom
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#mmoe">
+<span class="md-ellipsis">
+      
+        MMoE
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ple">
+<span class="md-ellipsis">
+      
+        PLE
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#42">
+<span class="md-ellipsis">
+      
+        4.2 任务依赖建模
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#43">
+<span class="md-ellipsis">
+      
+        4.3 多目标损失融合
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#05">
+<span class="md-ellipsis">
+      
+        05 多场景建模
+      
+    </span>
+</a>
+<nav aria-label="05 多场景建模" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#51">
+<span class="md-ellipsis">
+      
+        5.1 多塔结构
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#52">
+<span class="md-ellipsis">
+      
+        5.2 动态权重建模
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1>03 Ranking</h1>
+<p>在完成候选的快速筛选之后，精排需要对千级候选进行精细化的偏好预测。这个阶段要在可接受的延迟内平衡准确性、泛化能力与稳定性</p>
+<p>精排模型的发展有一条比较清晰的脉络。<span>Wide &amp; Deep<span class="heti-spacing"> </span></span>模型将线性模型的记忆能力和深度网络的泛化能力结合起来，成为了一个实用的基础框架。随着对特征交互重要性的认识加深，从<span class="heti-skip"><span class="heti-spacing"> </span>FM<span class="heti-spacing"> </span></span>开始，到<span><span class="heti-spacing"> </span>DeepFM</span>、xDeepFM，再到基于注意力的自动化交互建模，这些方法让模型能够更好地处理特征间的复杂关系</p>
+<p>考虑到用户兴趣的多样性和时序特点，序列建模技术也被引入到精排中。<span>DIN<span class="heti-spacing"> </span></span>关注用户兴趣的多样性，<span>DIEN<span class="heti-spacing"> </span></span>进一步建模兴趣演化，<span>DSIN<span class="heti-spacing"> </span></span>则处理会话序列，这些发展帮助模型更好地理解用户的动态偏好</p>
+<p>在实际应用中，往往需要同时优化多个目标，并且要适应不同的业务场景。多目标优化和多场景建模通过合理的架构设计、任务关系建模及动态权重策略，让精排模型能够在复杂的业务环境中取得更好的业务效果</p>
+<p>下面让我们进入推荐系统的核心环节——精排模型的世界</p>
+<hr/>
+<h2 id="01"><span>01<span class="heti-spacing"> </span></span>记忆与泛化<a class="headerlink" href="#01" title="Permanent link"><span><span class="heti-spacing"> </span>¶</span></a></h2>
+<p>在构建推荐模型时，我们常常追求两个看似矛盾的目标：<strong>记忆（Memorization）</strong> 与<strong>泛化（Generalization）</strong></p>
+<ul>
+<li><strong>记忆能力</strong>，指的是模型能够学习并记住那些在历史数据中频繁共同出现的特征组合。例如，模型记住“买了<span class="heti-skip"><span class="heti-spacing"> </span>A<span class="heti-spacing"> </span></span>的用户，通常也会买<span><span class="heti-spacing"> </span>B</span>”。这种能力可以精准地<strong>捕捉显性、高频的关联，为用户提供与他们历史行为高度相关的推荐</strong></li>
+<li><strong>泛化能力</strong>，就是模型能学到特征间的深层关系，处理训练时很少见到的特征组合。举个例子，模型发现“物品<span class="heti-skip"><span class="heti-spacing"> </span>A<span class="heti-spacing"> </span></span>和物品<span class="heti-skip"><span class="heti-spacing"> </span>C<span class="heti-spacing"> </span></span>都是同一类的，用户喜欢这类东西”，那就可以给喜欢<span class="heti-skip"><span class="heti-spacing"> </span>A<span class="heti-spacing"> </span></span>的用户推荐<span><span class="heti-spacing"> </span>C</span>，哪怕用户以前没见过<span><span class="heti-spacing"> </span>C</span>。这能让推荐更丰富一些</li>
+</ul>
+<p>怎么让一个模型同时做好这两件事呢？这确实不容易。<span>2016<span class="heti-spacing"> </span></span>年<span class="heti-skip"><span class="heti-spacing"> </span>Google<span class="heti-spacing"> </span></span>提出的<span class="heti-skip"><span class="heti-spacing"> </span>Wide &amp; Deep<span class="heti-spacing"> </span></span>模型给了一个不错的思路。这个模型的想法很直接：既然需要两种能力，那就设计两个部分，然后让它们一起训练，通过<span><span class="heti-spacing"> </span></span><strong>联合训练（Joint Training）</strong><span><span class="heti-spacing"> </span></span>的方式配合工作</p>
+<p>模型的设计思路是把结构分成两块，各自负责不同的事情：</p>
+<figure>
+<img alt="public/Pasted image 20260114153738.png" src="../public/Pasted%20image%2020260114153738.png" width="350"/>
+</figure>
+<p><strong>记忆的捷径：<span>Wide<span class="heti-spacing"> </span></span>部分</strong></p>
+<p><span>Wide<span class="heti-spacing"> </span></span>部分本质上是一个广义线性模型，比如逻辑回归。它的优势在于结构简单、可解释更强，并且能高效地“记忆”那些显而易见的关联规则。其数学表达形式如下：</p>
+<figure>
+<img alt="public/Pasted image 20260114153804.png" src="../public/Pasted%20image%2020260114153804.png" width="450"/>
+</figure>
+<p>其中，<span>y<span class="heti-spacing"> </span></span>是预测值，<span><span class="arithmatex">\(\omega\)</span><span class="heti-spacing"> </span></span>是模型权重，<span><span class="arithmatex">\(x\)</span><span class="heti-spacing"> </span></span>是特征向量， <span><span class="arithmatex">\(b\)</span><span class="heti-spacing"> </span></span>是偏置项。</p>
+<p><span>Wide<span class="heti-spacing"> </span></span>部分的关键在于其输入的特征向量。它不仅包含原始特征，更重要的是包含了大量<strong>人工设计的交叉特征（Cross-product Features）</strong>。交叉特征可以将多个独立的特征组合成一个新的特征，用于捕捉特定的共现模式</p>
+<p>例如，在应用商店的推荐场景中，我们可以创建一个交叉特征 <code>AND(installed_app=photo_editor, impression_app=filter_pack)</code>，它代表用户已经安装了“照片编辑器”应用，并且现在看到了“滤镜包”应用的推荐</p>
+<p>通过这种方式，<span>Wide<span class="heti-spacing"> </span></span>部分能够直接、快速地学习到“照片编辑器用户对滤镜包应用有更高的安装意愿”这类强关联规则，正是“记忆能力”的直接体现</p>
+<p><strong>核心代码</strong></p>
+<p><span>Wide<span class="heti-spacing"> </span></span>部分的关键在于处理交叉特征。对于每一对需要交叉的特征，模型会创建一个专门的权重来记住它们的共现模式：</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="c1"># 遍历所有需要交叉的特征对</span>
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="o">&lt;</span><span class="n">div</span> <span class="n">markdown</span><span class="o">=</span><span class="s2">"1"</span> <span class="n">style</span><span class="o">=</span><span class="s2">"margin-top: -30px; font-size: 0.75em; opacity: 0.7;"</span><span class="o">&gt;</span>
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="p">:</span><span class="n">material</span><span class="o">-</span><span class="n">circle</span><span class="o">-</span><span class="n">edit</span><span class="o">-</span><span class="n">outline</span><span class="p">:</span> <span class="n">约</span> <span class="mi">9189</span> <span class="n">个字</span> <span class="p">:</span><span class="n">fontawesome</span><span class="o">-</span><span class="n">solid</span><span class="o">-</span><span class="n">code</span><span class="p">:</span> <span class="mi">374</span> <span class="n">行代码</span> <span class="p">:</span><span class="n">material</span><span class="o">-</span><span class="n">image</span><span class="o">-</span><span class="n">multiple</span><span class="o">-</span><span class="n">outline</span><span class="p">:</span> <span class="mi">13</span> <span class="n">张图片</span> <span class="p">:</span><span class="n">material</span><span class="o">-</span><span class="n">clock</span><span class="o">-</span><span class="n">time</span><span class="o">-</span><span class="n">two</span><span class="o">-</span><span class="n">outline</span><span class="p">:</span> <span class="n">预计阅读时间</span> <span class="mi">35</span> <span class="n">分钟</span>
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">cross_feature_columns</span><span class="p">)):</span>
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">cross_feature_columns</span><span class="p">)):</span>
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>        <span class="n">fc_i</span> <span class="o">=</span> <span class="n">cross_feature_columns</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>        <span class="n">fc_j</span> <span class="o">=</span> <span class="n">cross_feature_columns</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>        <span class="c1"># 获取两个特征的输入</span>
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>        <span class="n">feat_i</span> <span class="o">=</span> <span class="n">input_layer_dict</span><span class="p">[</span><span class="n">fc_i</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>  <span class="c1"># [B, 1]</span>
+<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>        <span class="n">feat_j</span> <span class="o">=</span> <span class="n">input_layer_dict</span><span class="p">[</span><span class="n">fc_j</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>  <span class="c1"># [B, 1]</span>
+<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>
+<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>        <span class="c1"># 为每个特征对创建独立的权重表</span>
+<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>        <span class="n">cross_vocab_size</span> <span class="o">=</span> <span class="n">fc_i</span><span class="o">.</span><span class="n">vocab_size</span> <span class="o">*</span> <span class="n">fc_j</span><span class="o">.</span><span class="n">vocab_size</span>
+<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>        <span class="n">cross_embedding</span> <span class="o">=</span> <span class="n">Embedding</span><span class="p">(</span>
+<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a>            <span class="n">input_dim</span><span class="o">=</span><span class="n">cross_vocab_size</span><span class="p">,</span>
+<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a>            <span class="n">output_dim</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>  <span class="c1"># 标量权重，直接记住这对特征的影响</span>
+<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a>            <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">"cross_</span><span class="si">{</span><span class="n">fc_i</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">fc_j</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">"</span>
+<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a>        <span class="p">)</span>
+<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a>
+<a href="#__codelineno-0-22" id="__codelineno-0-22" name="__codelineno-0-22"></a>        <span class="c1"># 将特征对组合成单一索引并查找权重</span>
+<a href="#__codelineno-0-23" id="__codelineno-0-23" name="__codelineno-0-23"></a>        <span class="n">combined_index</span> <span class="o">=</span> <span class="n">feat_i</span> <span class="o">*</span> <span class="n">fc_j</span><span class="o">.</span><span class="n">vocab_size</span> <span class="o">+</span> <span class="n">feat_j</span>
+<a href="#__codelineno-0-24" id="__codelineno-0-24" name="__codelineno-0-24"></a>        <span class="n">cross_weight</span> <span class="o">=</span> <span class="n">cross_embedding</span><span class="p">(</span><span class="n">combined_index</span><span class="p">)</span>  <span class="c1"># 查表得到这对特征的权重</span>
+<a href="#__codelineno-0-25" id="__codelineno-0-25" name="__codelineno-0-25"></a>        <span class="n">cross_weights</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cross_weight</span><span class="p">)</span>
+<a href="#__codelineno-0-26" id="__codelineno-0-26" name="__codelineno-0-26"></a>
+<a href="#__codelineno-0-27" id="__codelineno-0-27" name="__codelineno-0-27"></a><span class="c1"># 所有交叉特征权重相加</span>
+<a href="#__codelineno-0-28" id="__codelineno-0-28" name="__codelineno-0-28"></a><span class="n">cross_logits</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">add_n</span><span class="p">(</span><span class="n">cross_weights</span><span class="p">)</span>
+</code></pre></div>
+<p>这段代码的设计体现了<span class="heti-skip"><span class="heti-spacing"> </span>Wide<span class="heti-spacing"> </span></span>部分的本质：为每个特征组合分配一个独立的权重，通过查表操作直接“记住”历史数据中的共现模式</p>
+<p><strong>学习复杂关系：<span>Deep<span class="heti-spacing"> </span></span>部分</strong></p>
+<p><span>Deep<span class="heti-spacing"> </span></span>部分是一个标准的前馈神经网络（DNN<heti-adjacent class="heti-adjacent-half">）</heti-adjacent>，它负责模型的“泛化能力”。与<span class="heti-skip"><span class="heti-spacing"> </span>Wide<span class="heti-spacing"> </span></span>部分依赖人工特征工程不同，<span>Deep<span class="heti-spacing"> </span></span>部分可以自动学习特征之间的高阶、非线性关系</p>
+<p>它的工作流程如下：首先，对于那些高维稀疏的类别特征（如用户<span><span class="heti-spacing"> </span>ID</span>、物品<span><span class="heti-spacing"> </span>ID</span><heti-adjacent class="heti-adjacent-half">）</heti-adjacent>，通过一个<strong>嵌入层（Embedding Layer）</strong> 将它们映射为低维、稠密的向量。<strong>这些嵌入向量能够捕捉到特征的潜在语义信息，是实现泛化的基础</strong></p>
+<p>例如<heti-adjacent class="heti-adjacent-half">，</heti-adjacent>《流浪地球》和《三体》的电影<span class="heti-skip"><span class="heti-spacing"> </span>ID<span class="heti-spacing"> </span></span>在嵌入空间中的距离，可能会比《流浪地球》和《熊出没》更近</p>
+<p>随后，这些嵌入向量与其他数值特征拼接在一起，被送入多层神经网络中进行前向传播：</p>
+<figure>
+<img alt="public/Pasted image 20260114154657.png" src="../public/Pasted%20image%2020260114154657.png" width="450"/>
+</figure>
+<p>其中，<span><span class="arithmatex">\(a^{(l)}\)</span><span class="heti-spacing"> </span></span>是第<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(l\)</span><span class="heti-spacing"> </span></span>层的激活值，<span><span class="arithmatex">\(W^{(l)}\)</span><span class="heti-spacing"> </span></span>和<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(b^{(l)}\)</span><span class="heti-spacing"> </span></span>是该层的权重和偏置，<span><span class="arithmatex">\(f\)</span><span class="heti-spacing"> </span></span>是激活函数（如<span><span class="heti-spacing"> </span>ReLU</span><heti-adjacent class="heti-adjacent-half">）</heti-adjacent>。通过逐层抽象，<span>DNN<span class="heti-spacing"> </span></span>能够发掘出数据中隐藏的复杂模式，从而对未曾见过的特征组合也能做出合理的预测</p>
+<p><strong>核心代码</strong></p>
+<p><span>Deep<span class="heti-spacing"> </span></span>部分的实现分为两个关键步骤：首先将类别特征映射为稠密向量，然后通过多层神经网络学习高阶特征交互：</p>
+<ul>
+<li>在推荐系统的特征工程（FE）中，通常会将数以百计的特征按照<strong>属性来源</strong>划分为不同的“组”</li>
+</ul>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="c1"># 1. 特征嵌入：将稀疏的类别特征转换为稠密向量</span>
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="n">group_feature_dict</span> <span class="o">=</span> <span class="p">{}</span>
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="k">for</span> <span class="n">group_name</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">group_embedding_feature_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>    <span class="n">group_feature_dict</span><span class="p">[</span><span class="n">group_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">concat_group_embedding</span><span class="p">(</span>
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>        <span class="n">group_embedding_feature_dict</span><span class="p">,</span> <span class="n">group_name</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">flatten</span><span class="o">=</span><span class="kc">True</span>
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>    <span class="p">)</span>  <span class="c1"># B x (N * D) - 拼接所有特征的嵌入向量</span>
+<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>
+<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a><span class="c1"># 2. 深度神经网络：逐层学习特征的非线性组合</span>
+<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a><span class="n">deep_logits</span> <span class="o">=</span> <span class="p">[]</span>
+<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a><span class="k">for</span> <span class="n">group_name</span><span class="p">,</span> <span class="n">group_feature</span> <span class="ow">in</span> <span class="n">group_feature_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a>    <span class="c1"># 构建多层神经网络</span>
+<a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a>    <span class="n">deep_out</span> <span class="o">=</span> <span class="n">DNNs</span><span class="p">(</span>
+<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a>        <span class="n">units</span><span class="o">=</span><span class="n">dnn_units</span><span class="p">,</span>  <span class="c1"># 例如 [64, 32]</span>
+<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a>        <span class="n">activation</span><span class="o">=</span><span class="s2">"relu"</span><span class="p">,</span>  <span class="c1"># ReLU激活函数</span>
+<a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a>        <span class="n">dropout_rate</span><span class="o">=</span><span class="n">dnn_dropout_rate</span>
+<a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a>    <span class="p">)(</span><span class="n">group_feature</span><span class="p">)</span>
+<a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a>
+<a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a>    <span class="c1"># 输出层：将深度特征映射为预测分数</span>
+<a href="#__codelineno-1-19" id="__codelineno-1-19" name="__codelineno-1-19"></a>    <span class="n">deep_logit</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="kc">None</span><span class="p">)(</span><span class="n">deep_out</span><span class="p">)</span>
+<a href="#__codelineno-1-20" id="__codelineno-1-20" name="__codelineno-1-20"></a>    <span class="n">deep_logits</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">deep_logit</span><span class="p">)</span>
+</code></pre></div>
+<p>这种设计使得模型能够自动学习特征的语义表示，例如将“物品<span><span class="heti-spacing"> </span>A</span>”相关的特征映射到向量空间的相近位置，从而实现对未见过的特征组合的泛化预测</p>
+<p><strong>两者结合</strong></p>
+<p><span>Wide &amp; Deep<span class="heti-spacing"> </span></span>模型通过联合训练，将两部分的输出结合起来进行最终的预测。其预测概率如下：</p>
+<figure>
+<img alt="public/Pasted image 20260114155757.png" src="../public/Pasted%20image%2020260114155757.png" width="500"/>
+</figure>
+<p>在这里，<span><span class="arithmatex">\(\sigma\)</span><span class="heti-spacing"> </span></span>是<span class="heti-skip"><span class="heti-spacing"> </span>Sigmoid<span class="heti-spacing"> </span></span>函数，<span><span class="arithmatex">\([x, \phi(x)]\)</span><span class="heti-spacing"> </span></span>代表<span class="heti-skip"><span class="heti-spacing"> </span>Wide<span class="heti-spacing"> </span></span>部分的输入（包含原始特征和交叉特征<heti-adjacent class="heti-adjacent-half">）</heti-adjacent>，<span><span class="arithmatex">\(a^{(lf)}\)</span><span class="heti-spacing"> </span></span>是<span class="heti-skip"><span class="heti-spacing"> </span>Deep<span class="heti-spacing"> </span></span>部分最后一层的输出向量，<span><span class="arithmatex">\(w_{wide} w_{deep}\)</span><span class="heti-spacing"> </span></span>和<span class="heti-skip"><span class="heti-spacing"> </span>b<span class="heti-spacing"> </span></span>是最终预测层的权重和偏置。模型的梯度在反向传播时会同时更新<span class="heti-skip"><span class="heti-spacing"> </span>Wide<span class="heti-spacing"> </span></span>和<span class="heti-skip"><span class="heti-spacing"> </span>Deep<span class="heti-spacing"> </span></span>两部分的所有参数</p>
+<p>一个值得注意的工程细节是，由于两部分处理的特征类型不同，它们通常会采用不同的优化器</p>
+<ul>
+<li><strong><span>Wide<span class="heti-spacing"> </span></span>部分</strong>的输入特征非常稀疏，常使用带<span class="heti-skip"><span class="heti-spacing"> </span>L1<span class="heti-spacing"> </span></span>正则化的<span class="heti-skip"><span class="heti-spacing"> </span>FTRL (<span class="heti-spacing"> </span></span><a href="https://datawhalechina.github.io/fun-rec/chapter_references/references.html**id46**{: .hash}" title="Ferreira, R. N., &amp; Soares, C. (2025). Follow-the-regularized-leader with adversarial constraints. arXiv preprint arXiv: 2503.13366."><span class="heti-skip"><span class="heti-spacing"> </span>Ferreira and Soares, 2025<span class="heti-spacing"> </span></span></a><span class="heti-skip"><span class="heti-spacing"> </span>)<span class="heti-spacing"> </span></span>等优化器。<span>L1<span class="heti-spacing"> </span></span>正则化可以产生稀疏的权重，相当于自动进行特征选择，让模型只“记住”重要的规则</li>
+<li><strong><span>Deep<span class="heti-spacing"> </span></span>部分</strong>的参数是稠密的，更适合使用像<span><span class="heti-spacing"> </span>AdaGrad (</span><a href="https://datawhalechina.github.io/fun-rec/chapter_references/references.html**id69**{: .hash}" title="Duchi, J., Hazan, E., &amp; Singer, Y. (2011). Adaptive subgradient methods for online learning and stochastic optimization. Journal of machine learning research, 12 (7)."><span><span class="heti-spacing"> </span>Duchi</span><em>et al.</em>, 2011</a><span>)<span class="heti-spacing"> </span></span>或<span class="heti-skip"><span class="heti-spacing"> </span>Adam (<span class="heti-spacing"> </span></span><a href="https://datawhalechina.github.io/fun-rec/chapter_references/references.html**id70**{: .hash}" title="Kingma, D. P., &amp; Ba, J. (2014). Adam: a method for stochastic optimization. arXiv preprint arXiv: 1412.6980."><span class="heti-skip"><span class="heti-spacing"> </span>Kingma and Ba, 2014<span class="heti-spacing"> </span></span></a><span class="heti-skip"><span class="heti-spacing"> </span>)<span class="heti-spacing"> </span></span>这样的优化器</li>
+</ul>
+<p><strong>核心代码</strong></p>
+<p>联合训练的核心是将<span class="heti-skip"><span class="heti-spacing"> </span>Wide<span class="heti-spacing"> </span></span>和<span class="heti-skip"><span class="heti-spacing"> </span>Deep<span class="heti-spacing"> </span></span>两部分的输出进行融合：</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="c1"># Wide部分：线性特征 + 交叉特征</span>
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="n">linear_logit</span> <span class="o">=</span> <span class="n">get_linear_logits</span><span class="p">(</span><span class="n">input_layer_dict</span><span class="p">,</span> <span class="n">feature_columns</span><span class="p">)</span>
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="n">cross_logit</span> <span class="o">=</span> <span class="n">get_cross_logits</span><span class="p">(</span><span class="n">input_layer_dict</span><span class="p">,</span> <span class="n">feature_columns</span><span class="p">)</span>
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="c1"># Deep部分：多个特征组的深度网络输出</span>
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a><span class="n">deep_logits</span> <span class="o">=</span> <span class="p">[]</span>
+<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a><span class="k">for</span> <span class="n">group_name</span><span class="p">,</span> <span class="n">group_feature</span> <span class="ow">in</span> <span class="n">group_feature_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a>    <span class="n">deep_out</span> <span class="o">=</span> <span class="n">DNNs</span><span class="p">(</span><span class="n">units</span><span class="o">=</span><span class="n">dnn_units</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s2">"relu"</span><span class="p">,</span> <span class="n">dropout_rate</span><span class="o">=</span><span class="n">dnn_dropout_rate</span><span class="p">)(</span>
+<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a>        <span class="n">group_feature</span>
+<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a>    <span class="p">)</span>
+<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a>    <span class="n">deep_logit</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="kc">None</span><span class="p">)(</span><span class="n">deep_out</span><span class="p">)</span>
+<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a>    <span class="n">deep_logits</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">deep_logit</span><span class="p">)</span>
+<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a>
+<a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a><span class="c1"># 联合训练：将Wide和Deep的输出相加</span>
+<a href="#__codelineno-2-15" id="__codelineno-2-15" name="__codelineno-2-15"></a><span class="n">wide_deep_logits</span> <span class="o">=</span> <span class="n">add_tensor_func</span><span class="p">(</span><span class="n">deep_logits</span> <span class="o">+</span> <span class="p">[</span><span class="n">linear_logit</span><span class="p">,</span> <span class="n">cross_logit</span><span class="p">])</span>
+<a href="#__codelineno-2-16" id="__codelineno-2-16" name="__codelineno-2-16"></a>
+<a href="#__codelineno-2-17" id="__codelineno-2-17" name="__codelineno-2-17"></a><span class="c1"># 最终预测：通过sigmoid函数输出点击概率</span>
+<a href="#__codelineno-2-18" id="__codelineno-2-18" name="__codelineno-2-18"></a><span class="n">output</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s2">"sigmoid"</span><span class="p">)(</span><span class="n">wide_deep_logits</span><span class="p">)</span>
+</code></pre></div>
+<p><span>Wide &amp; Deep<span class="heti-spacing"> </span></span>模型的意义不只是提供了一个新的网络结构，更重要的是给出了一个思路：怎么把记忆能力和泛化能力结合起来。该模型不仅成为了许多推荐业务的基线模型，更为后续精排模型的发展提供了重要的参考</p>
+<hr/>
+<h2 id="02"><span>02<span class="heti-spacing"> </span></span>特征交叉<a class="headerlink" href="#02" title="Permanent link"><span><span class="heti-spacing"> </span>¶</span></a></h2>
+<p>前面我们讲了<span class="heti-skip"><span class="heti-spacing"> </span>Wide &amp; Deep<span class="heti-spacing"> </span></span>模型，它把记忆能力和泛化能力结合起来。不过<span class="heti-skip"><span class="heti-spacing"> </span>Wide<span class="heti-spacing"> </span></span>部分有个问题：需要人工设计交叉特征，比如“用户年龄<span class="heti-skip"><span class="heti-spacing"> </span>×<span class="heti-spacing"> </span></span>商品类别”这样的组合。这种手工设计的方式不仅费时费力，还很难覆盖所有有用的特征组合</p>
+<p>既然手工设计这么麻烦，那能不能让模型自己学会做特征交叉呢？这就是本节要讨论的核心问题。我们会按照两条技术路线来看：先从简单的二阶交叉开始，然后到更复杂的高阶交叉，最后看看怎么让交叉变得更个性化和自适应</p>
+<h3 id="21"><span>2.1<span class="heti-spacing"> </span></span>二阶特征交叉<a class="headerlink" href="#21" title="Permanent link"><span><span class="heti-spacing"> </span>¶</span></a></h3>
+<p><span>Wide &amp; Deep<span class="heti-spacing"> </span></span>模型虽然不错，但手工设计特征交叉实在太麻烦了。能不能让机器自己学会特征之间的关系呢？这就是我们要解决的问题。最直接的想法是让模型自动捕捉所有特征对之间的交互关系。但这里有个大问题：推荐系统的特征动辄成千上万，如果每两个特征都要学一个参数，参数量会爆炸。而且推荐数据本身就很稀疏，大部分特征组合根本没有足够的样本来训练</p>
+<p>所以关键是要找到一种巧妙的方法，既能自动学习特征交叉，又不会让参数太多。解决了这个问题后，还得考虑怎么把这些学到的交叉特征和深度网络结合起来</p>
+<h4 id="fm">FM<a class="headerlink" href="#fm" title="Permanent link">¶</a></h4>
+<p>还记得我们在召回章节<span class="heti-skip"><span class="heti-spacing"> </span><span class="heti-spacing"> </span></span><a href="https://datawhalechina.github.io/fun-rec/chapter_1_retrieval/2.embedding/2.u2i.html#fm-matching-model"><span class="heti-skip"><span class="heti-spacing"> </span>2.2.2.1<span class="heti-spacing"> </span></span>节</a><span class="heti-skip"><span class="heti-spacing"> </span><span class="heti-spacing"> </span></span>遇到的<span class="heti-skip"><span class="heti-spacing"> </span>FM<span class="heti-spacing"> </span></span>吗？当时我们看到它如何巧妙地将用户和物品分解成向量，通过内积实现高效的双塔召回。现在到了精排阶段，<span>FM<span class="heti-spacing"> </span></span>又要展现它的另一面了</p>
+<p>在召回时，<span>FM<span class="heti-spacing"> </span></span>主要解决的是“如何快速从海量物品中找到候选集”的问题。但在精排阶段，我们面临的挑战完全不同：<strong>如何自动学习特征之间的交叉关系，而不用手工一个个去设计</strong></p>
+<p>这时候<span class="heti-skip"><span class="heti-spacing"> </span>FM<span class="heti-spacing"> </span></span>的核心思想就派上用场了——<strong>给每个特征学一个向量表示，然后用向量内积来捕捉特征间的关系</strong>。听起来很简单对吧？但这个简单的想法解决了一个大问题：不管你有多少特征，不管特征组合有多复杂，都能用同一套方法来处理。最关键的是，参数数量不会爆炸式增长，这对于推荐系统这种特征超多的场景来说太重要了</p>
+<figure>
+<img alt="public/Pasted image 20260114163533.png" src="../public/Pasted%20image%2020260114163533.png" width="400"/>
+</figure>
+<div class="arithmatex">\[
+\text{图3.2.1 FM 模型结构}
+\]</div>
+<p>为了捕捉特征间的交互关系，一个直接的想法是在线性模型的基础上增加所有特征的二阶组合项，即多项式模型：</p>
+<div class="arithmatex">\[y=w_0+\sum_{i=1}^nw_ix_i+\sum_{i=1}^{n-1}\sum_{j=i+1}^nw_{ij}x_ix_j\]</div>
+<p>其中，<span><span class="arithmatex">\(w_0\)</span><span class="heti-spacing"> </span></span>是全局偏置项，<span><span class="arithmatex">\(w_i\)</span><span class="heti-spacing"> </span></span>是特征<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(x_i\)</span><span class="heti-spacing"> </span></span>的权重，<span><span class="arithmatex">\(w_{ij}\)</span><span class="heti-spacing"> </span></span>是特征<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(x_i\)</span><span class="heti-spacing"> </span></span>和<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(x_j\)</span><span class="heti-spacing"> </span></span>交互的权重，<span><span class="arithmatex">\(n\)</span><span class="heti-spacing"> </span></span>是特征数量。这个模型存在两个致命缺陷：第一，参数数量会达到<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(O(n^2)\)</span><span class="heti-spacing"> </span></span>的级别，在特征数量庞大的推荐场景下难以承受；第二，在数据高度稀疏的环境中，绝大多数的交叉特征<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(x_ix_j\)</span><span class="heti-spacing"> </span></span>因为在训练集中从未共同出现过，导致其对应的权重<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(w_{ij}\)</span><span class="heti-spacing"> </span></span>无法得到有效学习</p>
+<p><span>FM<span class="heti-spacing"> </span></span>模型巧妙地解决了这个问题。它将交互权重<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(w_{ij}\)</span><span class="heti-spacing"> </span></span>分解为两个低维隐向量的内积，即<span><span class="heti-spacing"> </span><span class="arithmatex">\(w_{ij}=\langle\mathbf{v}_i,\mathbf{v}_j\rangle\)</span></span>。这样，模型的预测公式就演变为：</p>
+<div class="arithmatex">\[y=w_0+\sum_{i=1}^nw_ix_i+\sum_{i=1}^{n-1}\sum_{j=i+1}^n\langle\mathbf{v}_i,\mathbf{v}_j\rangle x_ix_j\]</div>
+<p>这种参数共享的设计是<span class="heti-skip"><span class="heti-spacing"> </span>FM<span class="heti-spacing"> </span></span>的精髓所在。原本需要学习<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(O(n^2)\)</span><span class="heti-spacing"> </span></span>个独立的交叉权重<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(w_{ij}\)</span>,<span class="heti-spacing"> </span></span>现在只需要为每个特征学习一个<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(k\)</span><span class="heti-spacing"> </span></span>维的隐向量<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(v_i\)</span>,<span class="heti-spacing"> </span></span>总参数量就从<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(O(n^2)\)</span><span class="heti-spacing"> </span></span>降低到了<span><span class="heti-spacing"> </span><span class="arithmatex">\(O(nk)\)</span></span>。更重要的是，它极大地缓解了数据稀疏问题。即使特征<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(i\)</span><span class="heti-spacing"> </span></span>和<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(j\)</span><span class="heti-spacing"> </span></span>在训练样本中从未同时出现过，模型依然可以通过它们各自与其他特征<span class="heti-skip"><span class="heti-spacing"> </span>(<span class="heti-spacing"> </span></span>如<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(k\)</span>)<span class="heti-spacing"> </span></span>的共现数据，分别学到有效的隐向量<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(v_i\)</span><span class="heti-spacing"> </span></span>和<span><span class="heti-spacing"> </span><span class="arithmatex">\(v_j\)</span></span>。只要隐向量学习得足够好，模型就能够泛化并预测<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(x_i\)</span><span class="heti-spacing"> </span></span>和<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(x_j\)</span><span class="heti-spacing"> </span></span>的交叉效果。此外，通过巧妙的数学变换，<span>FM<span class="heti-spacing"> </span></span>的二阶交叉项计算复杂度可以从<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(O(kn^2)\)</span><span class="heti-spacing"> </span></span>优化到线性的<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(O(kn)\)</span>,<span class="heti-spacing"> </span></span>使其在工业界得到了广泛应用</p>
+<p><strong>核心代码</strong></p>
+<p><span>FM<span class="heti-spacing"> </span></span>的核心在于将<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(O(n^2)\)</span><span class="heti-spacing"> </span></span>的二阶交叉项优化为线性复杂度。通过简单的代数变换，我们可以高效计算所有特征对的交互：</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="c1"># FM层的核心计算：0.5 * ((sum(v))^2 - sum(v^2))</span>
+<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="c1"># inputs: [batch_size, field_num, embedding_size]</span>
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a>
+<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="c1"># 先求和再平方：(∑v_i)^2</span>
+<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a><span class="n">square_of_sum</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">square</span><span class="p">(</span>
+<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a>    <span class="n">tf</span><span class="o">.</span><span class="n">reduce_sum</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a><span class="p">)</span>  <span class="c1"># [B, 1, D]</span>
+<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a>
+<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a><span class="c1"># 先平方再求和：∑(v_i^2)</span>
+<a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a><span class="n">sum_of_square</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_sum</span><span class="p">(</span>
+<a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a>    <span class="n">inputs</span> <span class="o">*</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span>
+<a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a><span class="p">)</span>  <span class="c1"># [B, 1, D]</span>
+<a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a>
+<a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a><span class="c1"># FM二阶交互项</span>
+<a href="#__codelineno-3-15" id="__codelineno-3-15" name="__codelineno-3-15"></a><span class="n">cross_term</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_sum</span><span class="p">(</span>
+<a href="#__codelineno-3-16" id="__codelineno-3-16" name="__codelineno-3-16"></a>    <span class="n">square_of_sum</span> <span class="o">-</span> <span class="n">sum_of_square</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">2</span>
+<a href="#__codelineno-3-17" id="__codelineno-3-17" name="__codelineno-3-17"></a><span class="p">)</span>  <span class="c1"># [B, 1]</span>
+</code></pre></div>
+<p>这个实现的巧妙之处在于，无论有多少特征，计算复杂度始终保持线性，使得<span class="heti-skip"><span class="heti-spacing"> </span>FM<span class="heti-spacing"> </span></span>能够处理推荐系统中常见的高维稀疏特征</p>
+<h4 id="afm">AFM<a class="headerlink" href="#afm" title="Permanent link">¶</a></h4>
+<p><span>FM<span class="heti-spacing"> </span></span>对所有特征交叉给予了相同的权重，但实际上不同交叉组合的重要性是不同的。AFM (<a href="https://datawhalechina.github.io/fun-rec/chapter_references/references.html**id48**{: .hash}" title="Xiao, J., Ye, H., He, X., Zhang, H., Wu, F., &amp; Chua, T.-S. (2017). Attentional factorization machines: learning the weight of feature interactions via attention networks. arXiv preprint arXiv: 1708.04617.">Xiao <em>et al.</em>, 2017</a><span>)<span class="heti-spacing"> </span></span>在此基础上引入注意力机制，为不同的特征交叉分配权重，使模型能关注到更重要的交互。例如，在预测一位用户是否会点击一条体育新闻时<heti-adjacent class="heti-adjacent-quarter">，</heti-adjacent>“用户年龄<span class="heti-skip"><span class="heti-spacing"> </span>=18-24<span class="heti-spacing"> </span></span>岁”与“新闻类别<span class="heti-skip"><span class="heti-spacing"> </span>=<span class="heti-spacing"> </span></span>体育”的交叉，其重要性显然要高于“用户年龄<span class="heti-skip"><span class="heti-spacing"> </span>=18-24<span class="heti-spacing"> </span></span>岁”与“新闻发布时间<span class="heti-skip"><span class="heti-spacing"> </span>=<span class="heti-spacing"> </span></span>周三”的交叉</p>
+<figure>
+<img alt="public/Pasted image 20260114165710.png" src="../public/Pasted%20image%2020260114165710.png" width="500"/>
+</figure>
+<p><span>AFM<span class="heti-spacing"> </span></span>的模型结构在<span class="heti-skip"><span class="heti-spacing"> </span>FM<span class="heti-spacing"> </span></span>的基础上进行了扩展。它首先将所有成对特征的隐向量进行<strong>元素积（<span>Hadamard Product,<span class="heti-spacing"> </span></span>记为<span><span class="heti-spacing"> </span>: <span class="arithmatex">\(\odot\)</span></span> ）</strong>，而不是像<span class="heti-skip"><span class="heti-spacing"> </span>FM<span class="heti-spacing"> </span></span>那样直接求内积。这样做保留了交叉特征的向量信息，为后续的注意力计算提供了输入。这个步骤被称为成对交互层（Pair-wise Interaction Layer）</p>
+<div class="arithmatex">\[f_{PI}(\mathcal{E})=\left\{(v_i\odot v_j)x_ix_j\right\}_{(i,j)\in\mathcal{R}_x}\]</div>
+<p>其中，<span><span class="arithmatex">\(\mathcal{E}\)</span><span class="heti-spacing"> </span></span>表示输入样本中所有非零特征的<span class="heti-skip"><span class="heti-spacing"> </span>Embedding<span class="heti-spacing"> </span></span>向量集合，<span><span class="arithmatex">\(\mathcal{R}_x\)</span><span class="heti-spacing"> </span></span>表示输入样本中所有非零特征的索引对集合</p>
+<p>随后，模型引入一个注意力机制，来学习每个交叉特征<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\((v_i\odot v_j)\)</span><span class="heti-spacing"> </span></span>的重要性得分<span><span class="heti-spacing"> </span><span class="arithmatex">\(a_{ij}\)</span></span></p>
+<div class="arithmatex">\[a'_{ij}=\mathbf{h}^T\text{ReLU}(\mathbf{W}(v_i\odot v_j)x_ix_j+\mathbf{b})\]</div>
+<div class="arithmatex">\[a_{ij}=\frac{\exp(a'_{ij})}{\sum_{(i,k)\in\mathcal{R}_x}\exp(a'_{ik})}\]</div>
+<p>其中，<span><span class="arithmatex">\(\mathbf{W}\)</span><span class="heti-spacing"> </span></span>是注意力网络的权重矩阵，<span><span class="arithmatex">\(\mathbf{b}\)</span><span class="heti-spacing"> </span></span>是偏置向量，<span><span class="arithmatex">\(\mathbf{h}\)</span><span class="heti-spacing"> </span></span>是输出层向量。这个得分<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(a_{ij}\)</span><span class="heti-spacing"> </span></span>经过<span class="heti-skip"><span class="heti-spacing"> </span>Softmax<span class="heti-spacing"> </span></span>归一化后，被用作加权求和的权重，与原始的交叉特征向量相乘，最终汇总成一个向量。这个过程被称为注意力池化层（Attention-based Pooling）</p>
+<div class="arithmatex">\[f_{Att}=\sum_{(i,j)\in\mathcal{R}_x}a_{ij}(v_i\odot v_j)x_ix_j\]</div>
+<p>最后，<span>AFM<span class="heti-spacing"> </span></span>的完整预测公式由一阶线性部分和经过注意力加权的二阶交叉部分组成：</p>
+<div class="arithmatex">\[\hat{y}_{afm}(x)=w_0+\sum_{i=1}^{n}w_ix_i+\mathbf{P}^Tf_{Att}\]</div>
+<p>其中<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(P\)</span><span class="heti-spacing"> </span></span>是一个投影向量，用于将最终的交叉结果映射为标量。通过引入注意力机制，<strong><span>AFM<span class="heti-spacing"> </span></span>不仅提升了模型的表达能力，还通过可视化注意力权重<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(a_{ij}\)</span><span class="heti-spacing"> </span></span>赋予了模型更好的可解释性</strong>，让我们可以洞察哪些特征交叉对预测结果的贡献最大</p>
+<p><strong>核心代码</strong></p>
+<p><span>AFM<span class="heti-spacing"> </span></span>的关键在于注意力池化层，它为每个特征交叉对分配不同的权重：</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="c1"># 1. 计算所有特征对的元素积交互</span>
+<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a><span class="c1"># group_pairwise: [batch_size, num_pairs, embedding_dim]</span>
+<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a><span class="n">group_pairwise</span> <span class="o">=</span> <span class="n">pairwise_feature_interactions</span><span class="p">(</span>
+<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a>    <span class="n">group_feature</span><span class="p">,</span> <span class="n">drop_rate</span><span class="o">=</span><span class="n">dropout_rate</span>
+<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a><span class="p">)</span>
+<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a>
+<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a><span class="c1"># 2. 注意力权重计算：h^T · ReLU(W · (v_i ⊙ v_j) + b)</span>
+<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a><span class="n">weighted_inputs</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span>
+<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a>    <span class="n">group_pairwise</span><span class="p">,</span> <span class="n">attention_weight</span>
+<a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a><span class="p">)</span> <span class="o">+</span> <span class="n">attention_bias</span>  <span class="c1"># [B, num_pairs, attention_factor]</span>
+<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a>
+<a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a><span class="n">activation</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">weighted_inputs</span><span class="p">)</span>
+<a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a><span class="n">projected</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">activation</span><span class="p">,</span> <span class="n">attention_projection</span><span class="p">)</span>  <span class="c1"># [B, num_pairs, 1]</span>
+<a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a>
+<a href="#__codelineno-4-15" id="__codelineno-4-15" name="__codelineno-4-15"></a><span class="c1"># 3. Softmax归一化得到注意力权重</span>
+<a href="#__codelineno-4-16" id="__codelineno-4-16" name="__codelineno-4-16"></a><span class="n">attention_weights</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">projected</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<a href="#__codelineno-4-17" id="__codelineno-4-17" name="__codelineno-4-17"></a>
+<a href="#__codelineno-4-18" id="__codelineno-4-18" name="__codelineno-4-18"></a><span class="c1"># 4. 加权求和：∑ a_ij · (v_i ⊙ v_j)</span>
+<a href="#__codelineno-4-19" id="__codelineno-4-19" name="__codelineno-4-19"></a><span class="n">attention_output</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_sum</span><span class="p">(</span>
+<a href="#__codelineno-4-20" id="__codelineno-4-20" name="__codelineno-4-20"></a>    <span class="n">tf</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">group_pairwise</span><span class="p">,</span> <span class="n">attention_weights</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span>
+<a href="#__codelineno-4-21" id="__codelineno-4-21" name="__codelineno-4-21"></a><span class="p">)</span>  <span class="c1"># [B, D]</span>
+</code></pre></div>
+<p>相比<span class="heti-skip"><span class="heti-spacing"> </span>FM<span class="heti-spacing"> </span></span>对所有特征交叉一视同仁，<span>AFM<span class="heti-spacing"> </span></span>通过注意力机制自动识别重要的交互模式，提升了模型的表达能力和可解释性</p>
+<h4 id="nfm">NFM<a class="headerlink" href="#nfm" title="Permanent link">¶</a></h4>
+<p><span>NFM (<span class="heti-spacing"> </span></span><a href="https://datawhalechina.github.io/fun-rec/chapter_references/references.html**id47**{: .hash}" title="He, X., &amp; Chua, T.-S. (2017). Neural factorization machines for sparse predictive analytics. Proceedings of the 40th International ACM SIGIR conference on Research and Development in Information Retrieval (pp. 355–364)."><span>He and Chua, 2017<span class="heti-spacing"> </span></span></a><span>)<span class="heti-spacing"> </span></span>探索了如何更深入地利用交叉信息。它将<span class="heti-skip"><span class="heti-spacing"> </span>FM<span class="heti-spacing"> </span></span>的二阶交叉结果（用哈达玛积表示的向量）作为输入，送入一个深度神经网络（DNN<heti-adjacent class="heti-adjacent-half">）</heti-adjacent>，从而在<span class="heti-skip"><span class="heti-spacing"> </span>FM<span class="heti-spacing"> </span></span>的基础上学习更高阶、更复杂的非线性关系。<span>NFM<span class="heti-spacing"> </span></span>的核心思想是，<strong><span>FM<span class="heti-spacing"> </span></span>所捕获的二阶交叉信息本身就是一种非常有价值的特征，可以作为“原料”输入给强大的<span><span class="heti-spacing"> </span>DNN</span>，由<span class="heti-skip"><span class="heti-spacing"> </span>DNN<span class="heti-spacing"> </span></span>来自动学习这些交叉特征之间的高阶组合关系</strong></p>
+<hr/>
+<h2 id="03"><span>03<span class="heti-spacing"> </span></span>序列建模<a class="headerlink" href="#03" title="Permanent link"><span><span class="heti-spacing"> </span>¶</span></a></h2>
+<p>在上一节中，我们探讨了如何通过各类特征交叉模型，让机器自动学习特征之间复杂的组合关系。无论是二阶交叉的<span><span class="heti-spacing"> </span>FM</span>、AFM，还是高阶交叉的<span><span class="heti-spacing"> </span>DCN</span>、xDeepFM，它们的核心目标都是从一个静态的特征集合中挖掘出有价值的信息。然而，这些模型普遍存在一个共同的局限：它们大多将用户的历史行为看作一个无序的“物品袋”（a bag of items<heti-adjacent class="heti-adjacent-half">）</heti-adjacent>，如同用户的兴趣是一个静态的表示</p>
+<p>但用户的兴趣不是静止的，而是具有明显的<strong>时序性</strong>和<strong>动态演化</strong>特点。一个用户先浏览“鼠标”再浏览“显示器”，与先浏览“小说”再浏览“显示器”，这两个行为序列背后指向的购买意图截然不同。前者可能是一位正在组装电脑的数码爱好者，而后者可能只是在工作之余的随性浏览。传统的特征交叉模型难以捕捉这种蕴含在行为顺序中的、随时间变化的意图</p>
+<p>因此，本节我们将转换视角，不再将用户历史看作一堆静态特征的集合，而是将其视为一个动态的序列。我们将聚焦于如何对用户的行为序列进行建模，从这个序列中挖掘出用户动态、演化的兴趣。接下来，我们将介绍工业界在序列建模方向上的三个代表性模型：DIN、<span>DIEN<span class="heti-spacing"> </span></span>和<span><span class="heti-spacing"> </span>DSIN</span>，看看它们是如何解决这个核心挑战的</p>
+<h3 id="31"><span>3.1<span class="heti-spacing"> </span></span>局部激活的注意力机制<a class="headerlink" href="#31" title="Permanent link"><span><span class="heti-spacing"> </span>¶</span></a></h3>
+<p>在大型电商平台中，用户的兴趣是<strong>多样</strong>的。一个用户可能在一段时间内，既关注数码产品，又浏览运动装备，还会购买生活用品。在传统的深度学习模型（即<span class="heti-skip"><span class="heti-spacing"> </span>Embedding&amp;MLP<span class="heti-spacing"> </span></span>范式）中，通常的做法是将用户所有的历史行为（如点击过的商品<span><span class="heti-spacing"> </span>ID</span>）对应的<span class="heti-skip"><span class="heti-spacing"> </span>Embedding<span class="heti-spacing"> </span></span>向量通过池化（Pooling）操作，压缩成一个<strong>固定长度的向量</strong>来代表该用户</p>
+<p>这个固定长度的用户向量，很快就成为了表达用户多样兴趣的瓶颈。想象一下，无论系统准备向这个用户推荐“跑鞋”还是“手机”，代表他的都是同一个向量。这个向量试图“一视同仁”地蕴含该用户所有的兴趣点，这不仅非常困难，而且在面对具体推荐任务时显得不够聚焦。为了增强表达能力而粗暴地增加向量维度，又会带来参数量爆炸和过拟合的风险</p>
+<p><strong><span>DIN<span class="heti-spacing"> </span></span>的核心思想：局部激活<span><span class="heti-spacing"> </span>(Local Activation)</span></strong></p>
+<p>深度兴趣网络（Deep Interest Network, DIN） (<a href="https://datawhalechina.github.io/fun-rec/chapter_references/references.html**id52**{: .hash}" title="Zhou, G., Zhu, X., Song, C., Fan, Y., Zhu, H., Ma, X., … Gai, K. (2018). Deep interest network for click-through rate prediction. Proceedings of the 24th ACM SIGKDD international conference on knowledge discovery &amp; data mining (pp. 1059–1068).">Zhou <em>et al.</em>, 2018</a><span>)<span class="heti-spacing"> </span></span>的提出者们发现，用户的某一次具体点击行为，通常只由其历史兴趣中的<strong>一部分</strong>所“激活”。当向一位数码爱好者推荐“机械键盘”时，真正起决定性作用的，很可能是他最近浏览“游戏鼠标”和“显卡”的行为，而不是他上个月购买的“跑鞋”</p>
+<p>基于此，<span>DIN<span class="heti-spacing"> </span></span>提出了一个观点：<strong>用户的兴趣表示不应该是固定的，而应是根据当前的候选广告（Candidate Ad）不同而动态变化的</strong></p>
+<figure>
+<img alt="public/Pasted image 20260114190800.png" src="../public/Pasted%20image%2020260114190800.png" width="650"/>
+</figure>
+<p><strong>技术实现：注意力机制</strong></p>
+<p>为了实现“局部激活”这一思想，<span>DIN<span class="heti-spacing"> </span></span>在模型中引入了一个关键模块——<strong>局部激活单元（Local Activation Unit）</strong>，其本质就是<strong>注意力机制</strong>。如上图右侧所示，<span>DIN<span class="heti-spacing"> </span></span>不再像基准模型<span class="heti-skip"><span class="heti-spacing"> </span>(<span class="heti-spacing"> </span></span><a href="https://datawhalechina.github.io/fun-rec/chapter_2_ranking/3.sequence.html#din-architecture">图<span class="heti-skip"><span class="heti-spacing"> </span>3.3.1<span class="heti-spacing"> </span></span></a><span class="heti-skip"><span class="heti-spacing"> </span><span class="heti-spacing"> </span></span>左<span class="heti-skip"><span class="heti-spacing"> </span>)<span class="heti-spacing"> </span></span>那样对所有历史行为的<span class="heti-skip"><span class="heti-spacing"> </span>Embedding<span class="heti-spacing"> </span></span>进行简单的池化，而是进行了一次“加权求和”</p>
+<p>这个权重<span class="heti-skip"><span class="heti-spacing"> </span>(<span class="heti-spacing"> </span></span>即注意力分数<span class="heti-skip"><span class="heti-spacing"> </span>)<span class="heti-spacing"> </span></span>的计算，体现了<span class="heti-skip"><span class="heti-spacing"> </span>DIN<span class="heti-spacing"> </span></span>的核心思想。具体来说，对于一个给定的用户<span class="heti-skip"><span class="heti-spacing"> </span>U<span class="heti-spacing"> </span></span>和候选广告<span><span class="heti-spacing"> </span>A</span>，用户的兴趣表示向量<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(\boldsymbol{v}_U(A)\)</span><span class="heti-spacing"> </span></span>是这样计算的：</p>
+<div class="arithmatex">\[\boldsymbol{v}_U(A)=f(\boldsymbol{v}_A,\boldsymbol{e}_1,\boldsymbol{e}_2,\ldots,\boldsymbol{e}_H)=\sum_{j=1}^Ha(\boldsymbol{e}_j,\boldsymbol{v}_A)\boldsymbol{e}_j=\sum_{j=1}^Hw_j\boldsymbol{e}_j\]</div>
+<p>其中：</p>
+<p><span><span class="arithmatex">\(\bullet e_1,e_2,\ldots,e_H\)</span><span class="heti-spacing"> </span></span>是用户<span class="heti-skip"><span class="heti-spacing"> </span>U<span class="heti-spacing"> </span></span>的历史行为<span class="heti-skip"><span class="heti-spacing"> </span>Embedding<span class="heti-spacing"> </span></span>向量列表</p>
+<p><span><span class="arithmatex">\(\bullet v_A\)</span><span class="heti-spacing"> </span></span>是候选广告<span class="heti-skip"><span class="heti-spacing"> </span>A<span class="heti-spacing"> </span></span>的<span class="heti-skip"><span class="heti-spacing"> </span>Embedding<span class="heti-spacing"> </span></span>向量</p>
+<p><span><span class="arithmatex">\(\bullet a(\boldsymbol{e}_j,\boldsymbol{v}_A)\)</span><span class="heti-spacing"> </span></span>是一个激活单元<span class="heti-skip"><span class="heti-spacing"> </span>(<span class="heti-spacing"> </span></span>通常是一个小型前馈神经网络<span class="heti-skip"><span class="heti-spacing"> </span>),<span class="heti-spacing"> </span></span>它接收历史行为<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(\boldsymbol{e}_j\)</span><span class="heti-spacing"> </span></span>和候选广告<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(\boldsymbol{v}_A\)</span><span class="heti-spacing"> </span></span>作为输入</p>
+<p>输出一个权重<span><span class="heti-spacing"> </span><span class="arithmatex">\(\boldsymbol{w}_j\)</span></span>。这个权重就代表了历史行为<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(\boldsymbol{e}_j\)</span><span class="heti-spacing"> </span></span>在面对广告<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(\boldsymbol{v}_A\)</span><span class="heti-spacing"> </span></span>时的<span class="heti-skip"><span class="heti-spacing"> </span>"<span class="heti-spacing"> </span></span>相关性<span class="heti-skip"><span class="heti-spacing"> </span>"<span class="heti-spacing"> </span></span>或<span class="heti-skip"><span class="heti-spacing"> </span>"<span class="heti-spacing"> </span></span>注意力得分<span><span class="heti-spacing"> </span>"</span></p>
+<p>一个值得注意的细节是，<span>DIN<span class="heti-spacing"> </span></span>计算出的注意力权重没有经过<span class="heti-skip"><span class="heti-spacing"> </span>Softmax<span class="heti-spacing"> </span></span>归一化。这意味着不一定等于<span><span class="heti-spacing"> </span>1</span>。这样设计的目的是为了保留用户兴趣的绝对强度。例如，如果一个用户的历史行为大部分都与某个广告高度相关，那么加权和之后的向量模长就会比较大，反之则较小。这种设计使得模型不仅能捕捉兴趣的“方向”，还能感知兴趣的“强度”</p>
+<p><strong>核心代码</strong></p>
+<p><span>DIN<span class="heti-spacing"> </span></span>的注意力机制通过将候选广告与历史行为进行多角度交互来计算权重：</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="c1"># DIN注意力层的核心计算</span>
+<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="c1"># query: 候选广告 [batch_size, 1, embedding_dim]</span>
+<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="c1"># keys: 历史行为序列 [batch_size, seq_len, embedding_dim]</span>
+<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a>
+<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a><span class="n">query</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># [B, H]</span>
+<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a><span class="n">length</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">keys</span><span class="p">)[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a><span class="n">query</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># [B, 1, H]</span>
+<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a>
+<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a><span class="c1"># 构建多角度交互特征：query, keys, query-keys, query*keys</span>
+<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a><span class="n">att_inputs</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span>
+<a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a>    <span class="n">tf</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="mi">1</span><span class="p">]),</span>  <span class="c1"># 重复query以匹配序列长度</span>
+<a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a>    <span class="n">keys</span><span class="p">,</span>                             <span class="c1"># 历史行为</span>
+<a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a>    <span class="n">query</span> <span class="o">-</span> <span class="n">keys</span><span class="p">,</span>                     <span class="c1"># 差异特征</span>
+<a href="#__codelineno-5-14" id="__codelineno-5-14" name="__codelineno-5-14"></a>    <span class="n">query</span> <span class="o">*</span> <span class="n">keys</span>                      <span class="c1"># 元素积特征</span>
+<a href="#__codelineno-5-15" id="__codelineno-5-15" name="__codelineno-5-15"></a><span class="p">],</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># [B, L, 4*H]</span>
+<a href="#__codelineno-5-16" id="__codelineno-5-16" name="__codelineno-5-16"></a>
+<a href="#__codelineno-5-17" id="__codelineno-5-17" name="__codelineno-5-17"></a><span class="c1"># 通过前馈网络计算注意力分数</span>
+<a href="#__codelineno-5-18" id="__codelineno-5-18" name="__codelineno-5-18"></a><span class="n">hidden_layer</span> <span class="o">=</span> <span class="n">ffn_layer</span><span class="p">(</span><span class="n">att_inputs</span><span class="p">)</span>  <span class="c1"># [B, L, hidden_units]</span>
+<a href="#__codelineno-5-19" id="__codelineno-5-19" name="__codelineno-5-19"></a><span class="n">scores</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">1</span><span class="p">)(</span><span class="n">hidden_layer</span><span class="p">)</span>  <span class="c1"># [B, L, 1]</span>
+<a href="#__codelineno-5-20" id="__codelineno-5-20" name="__codelineno-5-20"></a>
+<a href="#__codelineno-5-21" id="__codelineno-5-21" name="__codelineno-5-21"></a><span class="c1"># 应用mask并进行加权求和（注意：不使用softmax归一化）</span>
+<a href="#__codelineno-5-22" id="__codelineno-5-22" name="__codelineno-5-22"></a><span class="n">attention_weights</span> <span class="o">=</span> <span class="n">scores</span> <span class="o">*</span> <span class="n">mask</span>  <span class="c1"># [B, L, 1]</span>
+<a href="#__codelineno-5-23" id="__codelineno-5-23" name="__codelineno-5-23"></a><span class="n">user_interest</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_sum</span><span class="p">(</span><span class="n">keys</span> <span class="o">*</span> <span class="n">attention_weights</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># [B, H]</span>
+</code></pre></div>
+<p>这种设计的关键在于：通过 <code>[query, keys, query-keys, query*keys]</code> 四种交互方式，模型能够从多个角度衡量历史行为与候选广告的相关性，同时不使用<span class="heti-skip"><span class="heti-spacing"> </span>softmax<span class="heti-spacing"> </span></span>归一化以保留兴趣强度信息</p>
+<h3 id="32"><span>3.2<span class="heti-spacing"> </span></span>兴趣的演化建模<a class="headerlink" href="#32" title="Permanent link"><span><span class="heti-spacing"> </span>¶</span></a></h3>
+<p><span>DIN<span class="heti-spacing"> </span></span>成功地捕捉了用户兴趣的“多样性”和“局部激活”特性，但它仍然存在一个局限：它将用户的历史行为看作是一个无序的集合，忽略了行为之间的<strong>时序依赖关系</strong>。用户的兴趣不仅是多样的，更是在持续<strong>演化</strong>的</p>
+<p>怎么解决这个问题呢？深度兴趣演化网络（Deep Interest Evolution Network, DIEN） (<a href="https://datawhalechina.github.io/fun-rec/chapter_references/references.html**id53**{: .hash}" title="Zhou, G., Mou, N., Fan, Y., Pi, Q., Bian, W., Zhou, C., … Gai, K. (2019). Deep interest evolution network for click-through rate prediction. Proceedings of the AAAI conference on artificial intelligence (pp. 5941–5948).">Zhou <em>et al.</em>, 2019</a><span>)<span class="heti-spacing"> </span></span>给出了答案。它的想法很简单：光知道用户过去喜欢什么还不够，还得搞清楚这些兴趣是怎么变化的，这样才能更好地预测用户接下来会喜欢什么</p>
+<figure>
+<img alt="public/Pasted image 20260114191150.png" src="../public/Pasted%20image%2020260114191150.png" width="550"/>
+</figure>
+<p><span>DIEN<span class="heti-spacing"> </span></span>的核心想法其实很有意思：用户的点击、购买这些行为只是表面现象，真正重要的是藏在背后的<span><span class="heti-spacing"> </span></span><strong>“兴趣”状态</strong>。比如你今天买了本编程书，明天又买了个键盘，这些行为背后可能反映的是你对编程越来越感兴趣。<span>DIEN<span class="heti-spacing"> </span></span>就是要抓住这种兴趣变化的规律，所以它设计了一个两阶段的结构来实现这个目标</p>
+<p><strong>第一阶段：兴趣提取层<span><span class="heti-spacing"> </span>(Interest Extractor Layer)</span></strong></p>
+<p>这一层要做的事情就是从用户的行为序列中，找出真正能反映兴趣状态的信息。<span>DIEN<span class="heti-spacing"> </span></span>用<span class="heti-skip"><span class="heti-spacing"> </span>GRU<span class="heti-spacing"> </span></span>来按时间顺序处理用户的行为<span class="heti-skip"><span class="heti-spacing"> </span>Embedding<span class="heti-spacing"> </span></span>序列<span><span class="heti-spacing"> </span><span class="arithmatex">\(e_1, e_2, \ldots, e_T\)</span></span>。按理说，<span>GRU<span class="heti-spacing"> </span></span>在<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(t\)</span><span class="heti-spacing"> </span></span>时刻的隐状态<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(h_t\)</span><span class="heti-spacing"> </span></span>应该包含了到那个时刻为止的所有信息。但问题是，这个隐状态真的能准确表示用户的“兴趣”吗？</p>
+<p><span>DIEN<span class="heti-spacing"> </span></span>的做法很巧妙：既然我们说<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(t\)</span><span class="heti-spacing"> </span></span>时刻的兴趣状态能反映用户的真实想法，那它应该能预测用户接下来会做什么，对吧？所以<span class="heti-skip"><span class="heti-spacing"> </span>DIEN<span class="heti-spacing"> </span></span>加了一个辅助损失<span><span class="heti-spacing"> </span>(Auxiliary Loss)</span>，让<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(t\)</span><span class="heti-spacing"> </span></span>时刻的兴趣状态<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(h_t\)</span><span class="heti-spacing"> </span></span>去预测用户在<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(t+1\)</span><span class="heti-spacing"> </span></span>时刻的真实行为<span><span class="heti-spacing"> </span><span class="arithmatex">\(e_{t+1}\)</span></span>。这样一来，模型就被“逼着”学出更有意义的兴趣表示。具体地，辅助损失<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(L_{aux}\)</span><span class="heti-spacing"> </span></span>定义如下：</p>
+<div class="arithmatex">\[L_{aux} = -\frac{1}{N}\left(\sum_{i=1}^{N}\sum_{t=1}^{T}\log\sigma(h_t^i, e_{b[t+1]}^i) + \log(1-\sigma(h_t^i, \hat{e}_{b[t+1]}^i))\right)\]</div>
+<p>其中：</p>
+<ul>
+<li><span><span class="arithmatex">\(h_t^i\)</span><span class="heti-spacing"> </span></span>是用户<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(i\)</span><span class="heti-spacing"> </span></span>在<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(t\)</span><span class="heti-spacing"> </span></span>时刻的兴趣状态（即<span class="heti-skip"><span class="heti-spacing"> </span>GRU<span class="heti-spacing"> </span></span>的隐状态）</li>
+<li><span><span class="arithmatex">\(e_{b[t+1]}^i\)</span><span class="heti-spacing"> </span></span>是用户<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(i\)</span><span class="heti-spacing"> </span></span>在<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(t+1\)</span><span class="heti-spacing"> </span></span>时刻真实点击的物品<span><span class="heti-spacing"> </span>Embedding</span>（正样本）</li>
+<li><span><span class="arithmatex">\(\hat{e}_{b[t+1]}^i\)</span><span class="heti-spacing"> </span></span>是从物品池中负采样得到的物品<span><span class="heti-spacing"> </span>Embedding</span>（负样本）</li>
+<li><span><span class="arithmatex">\(\sigma(\cdot)\)</span><span class="heti-spacing"> </span></span>是<span class="heti-skip"><span class="heti-spacing"> </span>Sigmoid<span class="heti-spacing"> </span></span>函数，这里用于计算两个向量的点积并映射到<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\((0, 1)\)</span><span class="heti-spacing"> </span></span>区间</li>
+</ul>
+<p>这个辅助损失会与模型最终的<span class="heti-skip"><span class="heti-spacing"> </span>CTR<span class="heti-spacing"> </span></span>预测损失<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(L_{target}\)</span><span class="heti-spacing"> </span></span>加在一起共同优化：<span class="arithmatex">\(L = L_{target} + \alpha L_{aux}\)</span>。这个额外的监督信号，在每个时间步都对<span class="heti-skip"><span class="heti-spacing"> </span>GRU<span class="heti-spacing"> </span></span>的学习进行指导，使其产出的隐状态<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(h_t\)</span><span class="heti-spacing"> </span></span>能够更精准地表达用户的潜在兴趣</p>
+<p><strong>核心代码</strong></p>
+<p>辅助损失的计算通过预测下一个行为来监督兴趣状态的学习：</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="c1"># 兴趣提取层的辅助损失计算</span>
+<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a><span class="c1"># interest_states: [batch_size, seq_len, hidden_units]</span>
+<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="c1"># pos_behaviors: [batch_size, seq_len, embedding_dim] 正样本行为</span>
+<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a><span class="c1"># neg_behaviors: [batch_size, seq_len, embedding_dim] 负样本行为</span>
+<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a>
+<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a><span class="c1"># 用t时刻的兴趣预测t+1时刻的行为</span>
+<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a><span class="n">current_interests</span> <span class="o">=</span> <span class="n">interest_states</span><span class="p">[:,</span> <span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span>      <span class="c1"># [B, T-1, H]</span>
+<a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a><span class="n">next_pos_behaviors</span> <span class="o">=</span> <span class="n">pos_behaviors</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">:,</span> <span class="p">:]</span>        <span class="c1"># [B, T-1, D]</span>
+<a href="#__codelineno-6-9" id="__codelineno-6-9" name="__codelineno-6-9"></a><span class="n">next_neg_behaviors</span> <span class="o">=</span> <span class="n">neg_behaviors</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">:,</span> <span class="p">:]</span>        <span class="c1"># [B, T-1, D]</span>
+<a href="#__codelineno-6-10" id="__codelineno-6-10" name="__codelineno-6-10"></a>
+<a href="#__codelineno-6-11" id="__codelineno-6-11" name="__codelineno-6-11"></a><span class="c1"># 拼接兴趣和行为，送入MLP预测</span>
+<a href="#__codelineno-6-12" id="__codelineno-6-12" name="__codelineno-6-12"></a><span class="n">pos_input</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">current_interests</span><span class="p">,</span> <span class="n">next_pos_behaviors</span><span class="p">],</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+<a href="#__codelineno-6-13" id="__codelineno-6-13" name="__codelineno-6-13"></a><span class="n">neg_input</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">current_interests</span><span class="p">,</span> <span class="n">next_neg_behaviors</span><span class="p">],</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+<a href="#__codelineno-6-14" id="__codelineno-6-14" name="__codelineno-6-14"></a>
+<a href="#__codelineno-6-15" id="__codelineno-6-15" name="__codelineno-6-15"></a><span class="c1"># 预测正负样本的概率</span>
+<a href="#__codelineno-6-16" id="__codelineno-6-16" name="__codelineno-6-16"></a><span class="n">pos_probs</span> <span class="o">=</span> <span class="n">auxiliary_mlp</span><span class="p">(</span><span class="n">pos_input</span><span class="p">)</span>  <span class="c1"># [B, T-1, 1]</span>
+<a href="#__codelineno-6-17" id="__codelineno-6-17" name="__codelineno-6-17"></a><span class="n">neg_probs</span> <span class="o">=</span> <span class="n">auxiliary_mlp</span><span class="p">(</span><span class="n">neg_input</span><span class="p">)</span>  <span class="c1"># [B, T-1, 1]</span>
+<a href="#__codelineno-6-18" id="__codelineno-6-18" name="__codelineno-6-18"></a>
+<a href="#__codelineno-6-19" id="__codelineno-6-19" name="__codelineno-6-19"></a><span class="c1"># 二元交叉熵损失</span>
+<a href="#__codelineno-6-20" id="__codelineno-6-20" name="__codelineno-6-20"></a><span class="n">aux_loss</span> <span class="o">=</span> <span class="o">-</span><span class="n">tf</span><span class="o">.</span><span class="n">reduce_mean</span><span class="p">(</span>
+<a href="#__codelineno-6-21" id="__codelineno-6-21" name="__codelineno-6-21"></a>    <span class="n">tf</span><span class="o">.</span><span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">pos_probs</span> <span class="o">+</span> <span class="mf">1e-8</span><span class="p">)</span> <span class="o">+</span> <span class="n">tf</span><span class="o">.</span><span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">neg_probs</span> <span class="o">+</span> <span class="mf">1e-8</span><span class="p">)</span>
+<a href="#__codelineno-6-22" id="__codelineno-6-22" name="__codelineno-6-22"></a><span class="p">)</span>
+</code></pre></div>
+<p>这种设计确保<span class="heti-skip"><span class="heti-spacing"> </span>GRU<span class="heti-spacing"> </span></span>的隐状态不仅能记录历史信息，还能有效预测未来行为，从而学到更有意义的兴趣表示。</p>
+<p><strong>第二阶段：兴趣演化层<span><span class="heti-spacing"> </span>(Interest Evolving Layer)</span></strong></p>
+<p>经过第一阶段，我们得到了一个更能代表用户内在兴趣的兴趣状态序列<span><span class="heti-spacing"> </span><span class="arithmatex">\(h_1,h_2,\ldots,h_T\)</span></span>。第二阶段的目标，就是对</p>
+<p>这个兴趣序列的演化过程进行建模</p>
+<p>然而，兴趣的演化并不总是平滑的，常常会伴随着兴趣漂移<span class="heti-skip"><span class="heti-spacing"> </span>(Interest Drifting)<span class="heti-spacing"> </span></span>现象，即用户可能在不同的兴趣点之间快速切换。如果用一个标准的<span class="heti-skip"><span class="heti-spacing"> </span>GRU<span class="heti-spacing"> </span></span>来建模这个兴趣序列，不相关的历史兴趣<span class="heti-skip"><span class="heti-spacing"> </span>(<span class="heti-spacing"> </span></span>漂移<span class="heti-skip"><span class="heti-spacing"> </span>)<span class="heti-spacing"> </span></span>可能会干扰对当前主要兴趣演化的判断</p>
+<p>为了解决这个问题，<span>DIEN<span class="heti-spacing"> </span></span>再次借鉴了<span class="heti-skip"><span class="heti-spacing"> </span>DIN<span class="heti-spacing"> </span></span>的思想，并将其与序列模型融合，设计了带注意力更新门的<span><span class="heti-spacing"> </span>GRU</span></p>
+<p>(AUGRU) 。<span>AUGRU<span class="heti-spacing"> </span></span>的核心是在<span class="heti-skip"><span class="heti-spacing"> </span>GRU<span class="heti-spacing"> </span></span>的更新门<span class="heti-skip"><span class="heti-spacing"> </span>(Update Gate)<span class="heti-spacing"> </span></span>上融入了注意力机制。注意力得分<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(a_{t}\)</span><span class="heti-spacing"> </span></span>由<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(t\)</span><span class="heti-spacing"> </span></span>时刻的兴趣</p>
+<p>状态<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(\boldsymbol{h}_t\)</span><span class="heti-spacing"> </span></span>和候选广告<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(e_a\)</span><span class="heti-spacing"> </span></span>共同决定：</p>
+<div class="arithmatex">\[a_t=\frac{\exp(\boldsymbol{h}_tW\boldsymbol{e}_a)}{\sum_{j=1}^T\exp(\boldsymbol{h}_jW\boldsymbol{e}_a)}\]</div>
+<p>然后，这个注意力得分<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(a_t\)</span><span class="heti-spacing"> </span></span>会去调整<span class="heti-skip"><span class="heti-spacing"> </span>(scale) GRU<span class="heti-spacing"> </span></span>的原始更新门<span><span class="heti-spacing"> </span><span class="arithmatex">\(u_t^{\prime}{:}\)</span></span></p>
+<div class="arithmatex">\[\tilde{\boldsymbol{u}}_t^{\prime}=a_t\cdot\boldsymbol{u}_t^{\prime}\]</div>
+<p>最后，使用这个被注意力调整过的更新门<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(\tilde{\boldsymbol{u}}_t^{\prime}\)</span><span class="heti-spacing"> </span></span>来更新隐状态：</p>
+<div class="arithmatex">\[\boldsymbol{h}_t^{\prime}=(1-\tilde{\boldsymbol{u}}_t^{\prime})\circ\boldsymbol{h}_{t-1}^{\prime}+\tilde{\boldsymbol{u}}_t^{\prime}\circ\tilde{\boldsymbol{h}}_t^{\prime}\]</div>
+<p>其中<span class="heti-skip"><span class="heti-spacing"> </span>o<span class="heti-spacing"> </span></span>表示元素级乘积<span><span class="heti-spacing"> </span>(element-wise product)</span> </p>
+<p>通过这种方式，<span>AUGRU<span class="heti-spacing"> </span></span>在兴趣演化的每一步，都会参考当前的候选广告，来判断历史兴趣的相关性。与候选广告越相关的兴趣，其对应的越大，其信息在更新门中的权重也越大，从而能更顺畅地在序列中传递；反之，不相关的兴趣（漂移）其影响力就会被削弱。这使得模型能够聚焦于与当前推荐任务最相关的兴趣演化路径</p>
+<p><strong>核心代码</strong></p>
+<p><span>AUGRU<span class="heti-spacing"> </span></span>的核心在于用注意力分数调整<span class="heti-skip"><span class="heti-spacing"> </span>GRU<span class="heti-spacing"> </span></span>的更新门：</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="c1"># AUGRU的前向传播</span>
+<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a><span class="c1"># interest_states: [batch_size, seq_len, hidden_units]</span>
+<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a><span class="c1"># target_item_embedding: [batch_size, embedding_dim]</span>
+<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a>
+<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a><span class="c1"># 1. 计算双线性注意力分数</span>
+<a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a><span class="c1"># h_t * W * e_a</span>
+<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a><span class="n">h_W</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">tensordot</span><span class="p">(</span><span class="n">interest_states</span><span class="p">,</span> <span class="n">bilinear_weight</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="p">[[</span><span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
+<a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a><span class="n">target_expanded</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">target_item_embedding</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a><span class="n">attention_scores</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_sum</span><span class="p">(</span><span class="n">h_W</span> <span class="o">*</span> <span class="n">target_expanded</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>  <span class="c1"># [B, T]</span>
+<a href="#__codelineno-7-10" id="__codelineno-7-10" name="__codelineno-7-10"></a><span class="n">attention_scores</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">attention_scores</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># [B, T]</span>
+<a href="#__codelineno-7-11" id="__codelineno-7-11" name="__codelineno-7-11"></a>
+<a href="#__codelineno-7-12" id="__codelineno-7-12" name="__codelineno-7-12"></a><span class="c1"># 2. 逐步处理序列</span>
+<a href="#__codelineno-7-13" id="__codelineno-7-13" name="__codelineno-7-13"></a><span class="n">hidden_state</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">hidden_units</span><span class="p">])</span>
+<a href="#__codelineno-7-14" id="__codelineno-7-14" name="__codelineno-7-14"></a><span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">seq_len</span><span class="p">):</span>
+<a href="#__codelineno-7-15" id="__codelineno-7-15" name="__codelineno-7-15"></a>    <span class="n">current_input</span> <span class="o">=</span> <span class="n">interest_states</span><span class="p">[:,</span> <span class="n">t</span><span class="p">,</span> <span class="p">:]</span>     <span class="c1"># [B, H]</span>
+<a href="#__codelineno-7-16" id="__codelineno-7-16" name="__codelineno-7-16"></a>    <span class="n">current_attention</span> <span class="o">=</span> <span class="n">attention_scores</span><span class="p">[:,</span> <span class="n">t</span><span class="p">]</span>   <span class="c1"># [B]</span>
+<a href="#__codelineno-7-17" id="__codelineno-7-17" name="__codelineno-7-17"></a>
+<a href="#__codelineno-7-18" id="__codelineno-7-18" name="__codelineno-7-18"></a>    <span class="c1"># 标准GRU计算</span>
+<a href="#__codelineno-7-19" id="__codelineno-7-19" name="__codelineno-7-19"></a>    <span class="n">update_gate</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span>
+<a href="#__codelineno-7-20" id="__codelineno-7-20" name="__codelineno-7-20"></a>        <span class="n">dense_input_update</span><span class="p">(</span><span class="n">current_input</span><span class="p">)</span> <span class="o">+</span> <span class="n">dense_hidden_update</span><span class="p">(</span><span class="n">hidden_state</span><span class="p">)</span>
+<a href="#__codelineno-7-21" id="__codelineno-7-21" name="__codelineno-7-21"></a>    <span class="p">)</span>  <span class="c1"># [B, H]</span>
+<a href="#__codelineno-7-22" id="__codelineno-7-22" name="__codelineno-7-22"></a>
+<a href="#__codelineno-7-23" id="__codelineno-7-23" name="__codelineno-7-23"></a>    <span class="n">reset_gate</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span>
+<a href="#__codelineno-7-24" id="__codelineno-7-24" name="__codelineno-7-24"></a>        <span class="n">dense_input_reset</span><span class="p">(</span><span class="n">current_input</span><span class="p">)</span> <span class="o">+</span> <span class="n">dense_hidden_reset</span><span class="p">(</span><span class="n">hidden_state</span><span class="p">)</span>
+<a href="#__codelineno-7-25" id="__codelineno-7-25" name="__codelineno-7-25"></a>    <span class="p">)</span>  <span class="c1"># [B, H]</span>
+<a href="#__codelineno-7-26" id="__codelineno-7-26" name="__codelineno-7-26"></a>
+<a href="#__codelineno-7-27" id="__codelineno-7-27" name="__codelineno-7-27"></a>    <span class="n">candidate_state</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">tanh</span><span class="p">(</span>
+<a href="#__codelineno-7-28" id="__codelineno-7-28" name="__codelineno-7-28"></a>        <span class="n">dense_input_candidate</span><span class="p">(</span><span class="n">current_input</span><span class="p">)</span> <span class="o">+</span>
+<a href="#__codelineno-7-29" id="__codelineno-7-29" name="__codelineno-7-29"></a>        <span class="n">dense_hidden_candidate</span><span class="p">(</span><span class="n">reset_gate</span> <span class="o">*</span> <span class="n">hidden_state</span><span class="p">)</span>
+<a href="#__codelineno-7-30" id="__codelineno-7-30" name="__codelineno-7-30"></a>    <span class="p">)</span>  <span class="c1"># [B, H]</span>
+<a href="#__codelineno-7-31" id="__codelineno-7-31" name="__codelineno-7-31"></a>
+<a href="#__codelineno-7-32" id="__codelineno-7-32" name="__codelineno-7-32"></a>    <span class="c1"># 关键：用注意力分数缩放更新门</span>
+<a href="#__codelineno-7-33" id="__codelineno-7-33" name="__codelineno-7-33"></a>    <span class="n">attention_expanded</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">current_attention</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<a href="#__codelineno-7-34" id="__codelineno-7-34" name="__codelineno-7-34"></a>    <span class="n">attention_expanded</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">attention_expanded</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">hidden_units</span><span class="p">])</span>
+<a href="#__codelineno-7-35" id="__codelineno-7-35" name="__codelineno-7-35"></a>    <span class="n">attention_update_gate</span> <span class="o">=</span> <span class="n">attention_expanded</span> <span class="o">*</span> <span class="n">update_gate</span>  <span class="c1"># [B, H]</span>
+<a href="#__codelineno-7-36" id="__codelineno-7-36" name="__codelineno-7-36"></a>
+<a href="#__codelineno-7-37" id="__codelineno-7-37" name="__codelineno-7-37"></a>    <span class="c1"># 更新隐藏状态</span>
+<a href="#__codelineno-7-38" id="__codelineno-7-38" name="__codelineno-7-38"></a>    <span class="n">hidden_state</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">attention_update_gate</span><span class="p">)</span> <span class="o">*</span> <span class="n">hidden_state</span> <span class="o">+</span> \
+<a href="#__codelineno-7-39" id="__codelineno-7-39" name="__codelineno-7-39"></a>                   <span class="n">attention_update_gate</span> <span class="o">*</span> <span class="n">candidate_state</span>
+</code></pre></div>
+<p><span>AUGRU<span class="heti-spacing"> </span></span>通过注意力分数动态调整更新门，使得与目标广告相关的兴趣能够顺利传递，而不相关的兴趣（漂移）被抑制，从而更精准地捕捉兴趣演化路径</p>
+<h3 id="33"><span>3.3<span class="heti-spacing"> </span></span>从行为序列到会话序列<a class="headerlink" href="#33" title="Permanent link"><span><span class="heti-spacing"> </span>¶</span></a></h3>
+<p>从<span class="heti-skip"><span class="heti-spacing"> </span>DIN<span class="heti-spacing"> </span></span>到<span><span class="heti-spacing"> </span>DIEN</span>，我们看到了模型对用户兴趣的理解从“静态相关”走向了“动态演化”。然而，它们都将用户的行为看作一条连续的序列。但现实中，用户的行为模式更多是间断性的。用户通常在<strong>一个会话（Session）</strong><span><span class="heti-spacing"> </span></span>内拥有一个明确且集中的意图，而在<strong>不同会话</strong>之间，兴趣点可能发生巨大转变</p>
+<figure>
+<img alt="public/Pasted image 20260114191533.png" src="../public/Pasted%20image%2020260114191533.png" width="325"/>
+</figure>
+<p>如上图所示，一个用户可能在一个会话里集中浏览各种裤子，而在下一个会话则专注于戒指。这种<strong>会话内同质、会话间异质</strong>的现象非常普遍。如果直接用一个<span class="heti-skip"><span class="heti-spacing"> </span>RNN<span class="heti-spacing"> </span></span>模型处理这种“断层”明显的长序列，模型需要花费很大力气去学习这种兴趣的突变，效果并不理想。深度会话兴趣网络（Deep Session Interest Network, DSIN） (<a href="https://datawhalechina.github.io/fun-rec/chapter_references/references.html**id54**{: .hash}" title="Feng, Y., Lv, F., Shen, W., Wang, M., Sun, F., Zhu, Y., &amp; Yang, K. (2019). Deep session interest network for click-through rate prediction. arXiv preprint arXiv: 1905.06482.">Feng <em>et al.</em>, 2019</a><span>)<span class="heti-spacing"> </span></span>将“会话”作为分析用户行为的基本单元，并采用一种<strong>分层</strong>的思想来建模</p>
+<figure>
+<img alt="public/Pasted image 20260114191554.png" src="../public/Pasted%20image%2020260114191554.png" width="425"/>
+</figure>
+<hr/>
+<h2 id="04"><span>04<span class="heti-spacing"> </span></span>多目标建模<a class="headerlink" href="#04" title="Permanent link"><span><span class="heti-spacing"> </span>¶</span></a></h2>
+<p>多目标建模（Multi-Task Learning, MTL）通过联合优化多个相关任务，在推荐系统中实现用户体验与商业目标的协同提升。相比独立建模，多目标方法能够降低参数量、提升系统效率，并通过知识迁移缓解数据稀疏问题</p>
+<p>在实际应用中，电商场景联合优化<span><span class="heti-spacing"> </span>CTR</span>、CVR、<span>GMV<span class="heti-spacing"> </span></span>避免单一指标导致的低质商品推荐；视频平台同时优化播放完成率、评分预测、用户留存率提升长期用户价值。然而，多目标建模面临任务冲突、跷跷板效应和负迁移等核心挑战</p>
+<ul>
+<li><span>CVR<span class="heti-spacing"> </span></span>相对<span class="heti-skip"><span class="heti-spacing"> </span>CTR<span class="heti-spacing"> </span></span>更进一步，指向购买、收藏等具备某些效益的行为</li>
+</ul>
+<p>针对这些挑战，业界发展出三大解决方向：</p>
+<ol>
+<li>模型架构从<span class="heti-skip"><span class="heti-spacing"> </span>Shared-Bottom<span class="heti-spacing"> </span></span>到<span class="heti-skip"><span class="heti-spacing"> </span>MMoE<span class="heti-spacing"> </span></span>再到<span class="heti-skip"><span class="heti-spacing"> </span>PLE<span class="heti-spacing"> </span></span>的演进，解决任务冲突与负迁移</li>
+<li><span>ESMM<span class="heti-spacing"> </span></span>和<span class="heti-skip"><span class="heti-spacing"> </span>ESM2<span class="heti-spacing"> </span></span>等依赖关系建模方法，处理用户行为链路的样本偏差</li>
+<li>以及从手工加权到自适应优化的多损失融合策略，解决量级失衡与收敛异步问题</li>
+</ol>
+<p>本章将详细介绍这些核心技术的原理与实践</p>
+<h3 id="41"><span>4.1<span class="heti-spacing"> </span></span>基础结构演进<a class="headerlink" href="#41" title="Permanent link"><span><span class="heti-spacing"> </span>¶</span></a></h3>
+<h4 id="shared-bottom">Shared-Bottom<a class="headerlink" href="#shared-bottom" title="Permanent link">¶</a></h4>
+<p><span>Shared-Bottom<span class="heti-spacing"> </span></span>模型作为多目标建模的奠基性架构<span class="heti-skip"><span class="heti-spacing"> </span>,<span class="heti-spacing"> </span></span>采用<span class="heti-skip"><span class="heti-spacing"> </span>"<span class="heti-spacing"> </span></span>共享地基<span class="heti-skip"><span class="heti-spacing"> </span>+<span class="heti-spacing"> </span></span>独立塔楼<span class="heti-skip"><span class="heti-spacing"> </span>"<span class="heti-spacing"> </span></span>的设计范式。其核心结构包含两个关键组件<span><span class="heti-spacing"> </span>:</span></p>
+<ul>
+<li><strong>共享底层</strong><span>(Shared Bottom):<span class="heti-spacing"> </span></span>所有任务共用同一组特征转换层<span class="heti-skip"><span class="heti-spacing"> </span>,<span class="heti-spacing"> </span></span>负责学习跨任务的通用特征表示</li>
+<li><strong>任务特定塔</strong><span>(Task-Specific Towers):<span class="heti-spacing"> </span></span>每个任务拥有独立的顶层网络<span class="heti-skip"><span class="heti-spacing"> </span>,<span class="heti-spacing"> </span></span>基于共享表示学习任务特定决策边界</li>
+</ul>
+<figure>
+<img alt="public/Pasted image 20260217180813.png" src="../public/Pasted%20image%2020260217180813.png" width="475"/>
+</figure>
+<p>这种架构的数学表达可描述为<span><span class="heti-spacing"> </span>:</span></p>
+<div class="arithmatex">\[\hat{y}_t = f_t(W_t \cdot g(W_s \mathbf{x}))\]</div>
+<p>其中<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(\mathbf{W}_s\)</span><span class="heti-spacing"> </span></span>为共享层参数<span class="heti-skip"><span class="heti-spacing"> </span>, <span class="arithmatex">\(g(\cdot)\)</span><span class="heti-spacing"> </span></span>为共享特征提取函数<span class="heti-skip"><span class="heti-spacing"> </span>, <span class="arithmatex">\(f_t(\cdot)\)</span><span class="heti-spacing"> </span></span>为任务<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(t\)</span><span class="heti-spacing"> </span></span>的预测函数。其设计哲学建立在任务同质性假设上<span class="heti-skip"><span class="heti-spacing"> </span>:<span class="heti-spacing"> </span></span>不同任务共享相同的底层特征空间<span class="heti-skip"><span class="heti-spacing"> </span>,<span class="heti-spacing"> </span></span>仅需在顶层进行任务适配</p>
+<p><span>Shared-Bottom<span class="heti-spacing"> </span></span>模型在效率与泛化之间实现了良好的平衡<span class="heti-skip"><span class="heti-spacing"> </span>,<span class="heti-spacing"> </span></span>其核心优势主要体现在以下几点</p>
+<ol>
+<li>在参数效率方面<span class="heti-skip"><span class="heti-spacing"> </span>,<span class="heti-spacing"> </span></span>共享层占据了模型大部分的参数量这显著降低了模型的总参数量</li>
+<li>共享层具有正则化效应<span class="heti-skip"><span class="heti-spacing"> </span>,<span class="heti-spacing"> </span></span>它如同一个天然的正则化器<span class="heti-skip"><span class="heti-spacing"> </span>,<span class="heti-spacing"> </span></span>通过强制任务共用特征表示<span class="heti-skip"><span class="heti-spacing"> </span>,<span class="heti-spacing"> </span></span>有效防止了单个任务出现过拟合的情况
+   Regularization：模型在当前已知的训练数据上"过拟合" 👉 确保在未见过的数据上表现稳定</li>
+<li>在知识迁移方面<span class="heti-skip"><span class="heti-spacing"> </span>,<span class="heti-spacing"> </span></span>当任务之间存在潜在的相关性时<span class="heti-skip"><span class="heti-spacing"> </span>,<span class="heti-spacing"> </span></span>例如视频的点击率与完播率<span class="heti-skip"><span class="heti-spacing"> </span>,<span class="heti-spacing"> </span></span>共享层能够学习到通用的模式<span class="heti-skip"><span class="heti-spacing"> </span>,<span class="heti-spacing"> </span></span>从而提升小样本任务的泛化能力</li>
+</ol>
+<p>然而<span class="heti-skip"><span class="heti-spacing"> </span>, Shared-Bottom<span class="heti-spacing"> </span></span>模型也存在一个致命缺陷<span class="heti-skip"><span class="heti-spacing"> </span>,<span class="heti-spacing"> </span></span>即<strong>负迁移现象</strong>。当任务之间存在本质上的冲突时<span class="heti-skip"><span class="heti-spacing"> </span>,<span class="heti-spacing"> </span></span>该模型的硬共享机制会引发负迁移问题。从机制本质上来看<span class="heti-skip"><span class="heti-spacing"> </span>,<span class="heti-spacing"> </span></span>共享层的梯度更新方向是由所有任务共同决定的<span class="heti-skip"><span class="heti-spacing"> </span>,<span class="heti-spacing"> </span></span>一旦任务目标之间出现冲突<span class="heti-skip"><span class="heti-spacing"> </span>,<span class="heti-spacing"> </span></span>参数优化就会陷入方向性的矛盾</p>
+<p>在一些典型场景中<span class="heti-skip"><span class="heti-spacing"> </span>,<span class="heti-spacing"> </span></span>例如电商平台同时优化<span class="heti-skip"><span class="heti-spacing"> </span>"<span class="heti-spacing"> </span></span>点击率<span class="heti-skip"><span class="heti-spacing"> </span>"<span class="heti-spacing"> </span></span>与<span class="heti-skip"><span class="heti-spacing"> </span>"<span class="heti-spacing"> </span></span>客单价<span class="heti-skip"><span class="heti-spacing"> </span>"<span class="heti-spacing"> </span></span>时<span class="heti-skip"><span class="heti-spacing"> </span>,<span class="heti-spacing"> </span></span>低价商品可能会推动点击率的提升<span class="heti-skip"><span class="heti-spacing"> </span>,<span class="heti-spacing"> </span></span>但同时却抑制了客单价的增长<span class="heti-skip"><span class="heti-spacing"> </span>;<span class="heti-spacing"> </span></span>又如内容平台在平衡<span class="heti-skip"><span class="heti-spacing"> </span>"<span class="heti-spacing"> </span></span>内容消费深度<span class="heti-skip"><span class="heti-spacing"> </span>"<span class="heti-spacing"> </span></span>与<span class="heti-skip"><span class="heti-spacing"> </span>"<span class="heti-spacing"> </span></span>广告曝光量<span class="heti-skip"><span class="heti-spacing"> </span>"<span class="heti-spacing"> </span></span>时<span class="heti-skip"><span class="heti-spacing"> </span>,<span class="heti-spacing"> </span></span>深度阅读行为往往与广告点击行为呈负相关</p>
+<p>从数学角度来解释<span class="heti-skip"><span class="heti-spacing"> </span>,<span class="heti-spacing"> </span></span>假设任务<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(i\)</span><span class="heti-spacing"> </span></span>与任务<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(j\)</span><span class="heti-spacing"> </span></span>的损失梯度分别为<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(\nabla L_i\)</span><span class="heti-spacing"> </span></span>与<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(\nabla L_j\)</span>,<span class="heti-spacing"> </span></span>当<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(\nabla L_i \cdot \nabla L_j &lt; 0\)</span><span class="heti-spacing"> </span></span>时<span class="heti-skip"><span class="heti-spacing"> </span>,<span class="heti-spacing"> </span></span>共享层参数更新就会产生内在的冲突。这种冲突使得模型在处理矛盾任务时呈现出<span class="heti-skip"><span class="heti-spacing"> </span>"<span class="heti-spacing"> </span></span>零和博弈<span class="heti-skip"><span class="heti-spacing"> </span>"<span class="heti-spacing"> </span></span>的特性<span class="heti-skip"><span class="heti-spacing"> </span>,<span class="heti-spacing"> </span></span>即提升某一目标的性能往往需要以牺牲另一目标为代价<span class="heti-skip"><span class="heti-spacing"> </span>,<span class="heti-spacing"> </span></span>我们一般也称这类问题为<strong>跷跷板问题</strong></p>
+<p><strong><span>Shared-Bottom<span class="heti-spacing"> </span></span>代码实践</strong></p>
+<p><span>shared-bottom<span class="heti-spacing"> </span></span>模型构建代码如下<span class="heti-skip"><span class="heti-spacing"> </span>,<span class="heti-spacing"> </span></span>先组装输入到<span class="heti-skip"><span class="heti-spacing"> </span>shared-bottom<span class="heti-spacing"> </span></span>网络中的特征<span class="heti-skip"><span class="heti-spacing"> </span>dnn_inputs,<span class="heti-spacing"> </span></span>经过一个<span class="heti-skip"><span class="heti-spacing"> </span>shared-bottom DNN<span class="heti-spacing"> </span></span>网络<span class="heti-skip"><span class="heti-spacing"> </span>,<span class="heti-spacing"> </span></span>遍历创建各个任务独立的<span class="heti-skip"><span class="heti-spacing"> </span>DNN<span class="heti-spacing"> </span></span>塔<span class="heti-skip"><span class="heti-spacing"> </span>,<span class="heti-spacing"> </span></span>最后输出多个塔的预估值用于计算<span><span class="heti-spacing"> </span>Loss</span></p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">build_shared_bottom_model</span><span class="p">(</span>
+<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a>        <span class="n">feature_columns</span><span class="p">,</span>
+<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a>        <span class="n">task_name_list</span><span class="p">,</span>
+<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a>        <span class="n">share_dnn_units</span><span class="o">=</span><span class="p">[</span><span class="mi">128</span><span class="p">,</span> <span class="mi">64</span><span class="p">],</span>
+<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a>        <span class="n">task_tower_dnn_units</span><span class="o">=</span><span class="p">[</span><span class="mi">128</span><span class="p">,</span> <span class="mi">64</span><span class="p">],</span>
+<a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a>        <span class="p">):</span>
+<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a>    <span class="c1"># 输入层:将原始特征映射为 Keras 输入</span>
+<a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a>    <span class="n">input_layer_dict</span> <span class="o">=</span> <span class="n">build_input_layer</span><span class="p">(</span><span class="n">feature_columns</span><span class="p">)</span>
+<a href="#__codelineno-8-9" id="__codelineno-8-9" name="__codelineno-8-9"></a>
+<a href="#__codelineno-8-10" id="__codelineno-8-10" name="__codelineno-8-10"></a>    <span class="c1"># 嵌入层:为各特征组创建嵌入表,得到组内嵌入向量</span>
+<a href="#__codelineno-8-11" id="__codelineno-8-11" name="__codelineno-8-11"></a>    <span class="n">embedding_table_dict</span> <span class="o">=</span> <span class="n">build_group_feature_embedding_table_dict</span><span class="p">(</span>
+<a href="#__codelineno-8-12" id="__codelineno-8-12" name="__codelineno-8-12"></a>        <span class="n">feature_columns</span><span class="p">,</span> <span class="n">input_layer_dict</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s2">"embedding/"</span>
+<a href="#__codelineno-8-13" id="__codelineno-8-13" name="__codelineno-8-13"></a>    <span class="p">)</span>
+<a href="#__codelineno-8-14" id="__codelineno-8-14" name="__codelineno-8-14"></a>
+<a href="#__codelineno-8-15" id="__codelineno-8-15" name="__codelineno-8-15"></a>    <span class="c1"># 合并嵌入:将多组嵌入拼接为共享 DNN 的输入</span>
+<a href="#__codelineno-8-16" id="__codelineno-8-16" name="__codelineno-8-16"></a>    <span class="n">dnn_inputs</span> <span class="o">=</span> <span class="n">concat_group_embedding</span><span class="p">(</span><span class="n">embedding_table_dict</span><span class="p">,</span> <span class="s1">'dnn'</span><span class="p">)</span>
+<a href="#__codelineno-8-17" id="__codelineno-8-17" name="__codelineno-8-17"></a>
+<a href="#__codelineno-8-18" id="__codelineno-8-18" name="__codelineno-8-18"></a>    <span class="c1"># 共享底座:所有任务共享的特征抽取网络(Shared Bottom)</span>
+<a href="#__codelineno-8-19" id="__codelineno-8-19" name="__codelineno-8-19"></a>    <span class="n">shared_feature</span> <span class="o">=</span> <span class="n">DNNs</span><span class="p">(</span><span class="n">share_dnn_units</span><span class="p">)(</span><span class="n">dnn_inputs</span><span class="p">)</span>
+<a href="#__codelineno-8-20" id="__codelineno-8-20" name="__codelineno-8-20"></a>
+<a href="#__codelineno-8-21" id="__codelineno-8-21" name="__codelineno-8-21"></a>    <span class="c1"># 任务塔:在共享特征上为每个任务构建独立塔并输出概率</span>
+<a href="#__codelineno-8-22" id="__codelineno-8-22" name="__codelineno-8-22"></a>    <span class="n">task_outputs</span> <span class="o">=</span> <span class="p">[]</span>
+<a href="#__codelineno-8-23" id="__codelineno-8-23" name="__codelineno-8-23"></a>    <span class="k">for</span> <span class="n">task_name</span> <span class="ow">in</span> <span class="n">task_name_list</span><span class="p">:</span>
+<a href="#__codelineno-8-24" id="__codelineno-8-24" name="__codelineno-8-24"></a>        <span class="n">task_logit</span> <span class="o">=</span> <span class="n">DNNs</span><span class="p">(</span><span class="n">task_tower_dnn_units</span> <span class="o">+</span> <span class="p">[</span><span class="mi">1</span><span class="p">])(</span><span class="n">shared_feature</span><span class="p">)</span>
+<a href="#__codelineno-8-25" id="__codelineno-8-25" name="__codelineno-8-25"></a>        <span class="n">task_prob</span> <span class="o">=</span> <span class="n">PredictLayer</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">"task_</span><span class="si">{</span><span class="n">task_name</span><span class="si">}</span><span class="s2">"</span><span class="p">)(</span><span class="n">task_logit</span><span class="p">)</span>
+<a href="#__codelineno-8-26" id="__codelineno-8-26" name="__codelineno-8-26"></a>        <span class="n">task_outputs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">task_prob</span><span class="p">)</span>
+<a href="#__codelineno-8-27" id="__codelineno-8-27" name="__codelineno-8-27"></a>
+<a href="#__codelineno-8-28" id="__codelineno-8-28" name="__codelineno-8-28"></a>    <span class="c1"># 构建多任务模型:共享底座 + 多任务塔输出</span>
+<a href="#__codelineno-8-29" id="__codelineno-8-29" name="__codelineno-8-29"></a>    <span class="n">model</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Model</span><span class="p">(</span><span class="n">inputs</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">input_layer_dict</span><span class="o">.</span><span class="n">values</span><span class="p">()),</span> <span class="n">outputs</span><span class="o">=</span><span class="n">task_outputs</span><span class="p">)</span>
+<a href="#__codelineno-8-30" id="__codelineno-8-30" name="__codelineno-8-30"></a>    <span class="k">return</span> <span class="n">model</span>
+</code></pre></div>
+<p><strong>训练和评估</strong></p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">funrec</span><span class="w"> </span><span class="kn">import</span> <span class="n">run_experiment</span>
+<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a>
+<a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a><span class="n">run_experiment</span><span class="p">(</span><span class="s1">'shared_bottom'</span><span class="p">)</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a>+----------------+---------------+-----------------+-------------+-----------------+----------------+------------------+--------------+---------------------+--------------------+----------------------+
+<a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a>|   auc_is_click |   auc_is_like |   auc_long_view |   auc_macro |   gauc_is_click |   gauc_is_like |   gauc_long_view |   gauc_macro |   val_user_is_click |   val_user_is_like |   val_user_long_view |
+<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a>+================+===============+=================+=============+=================+================+==================+==============+=====================+====================+======================+
+<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a>|           0.61 |         0.431 |          0.4364 |      0.4925 |          0.5727 |         0.4433 |           0.4438 |       0.4866 |                 928 |                530 |                  925 |
+<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a>+----------------+---------------+-----------------+-------------+-----------------+----------------+------------------+--------------+---------------------+--------------------+----------------------+
+</code></pre></div>
+<h4 id="mmoe">MMoE<a class="headerlink" href="#mmoe" title="Permanent link">¶</a></h4>
+<p><img alt="public/Pasted image 20260217181630.png" src="../public/Pasted%20image%2020260217181630.png"/></p>
+<p>针对<span class="heti-skip"><span class="heti-spacing"> </span>Shared-Bottom<span class="heti-spacing"> </span></span>对相关性低的多个任务出现负迁移的现象<span class="heti-skip"><span class="heti-spacing"> </span>, OMoE (OneGate Mixture-of-Experts)<span class="heti-spacing"> </span></span>将底层共享的一个<span class="heti-skip"><span class="heti-spacing"> </span>Shared-Bottom<span class="heti-spacing"> </span></span>模块拆分成了多个<span class="heti-skip"><span class="heti-spacing"> </span>Expert,<span class="heti-spacing"> </span></span>最终<span class="heti-skip"><span class="heti-spacing"> </span>OMoE<span class="heti-spacing"> </span></span>的输出为多个<span class="heti-skip"><span class="heti-spacing"> </span>Expert<span class="heti-spacing"> </span></span>的加权和<span class="heti-skip"><span class="heti-spacing"> </span>,<span class="heti-spacing"> </span></span>本质可以看成是专家网络和全局门控的双层结构</p>
+<p>虽然<span class="heti-skip"><span class="heti-spacing"> </span>OMoE<span class="heti-spacing"> </span></span>通过底层多专家融合的方式提升了特征表征的多样性<span class="heti-skip"><span class="heti-spacing"> </span>,<span class="heti-spacing"> </span></span>从最终的实验结果看<span class="heti-skip"><span class="heti-spacing"> </span>,<span class="heti-spacing"> </span></span>确实可以一定程度上缓解低相关性任务的负迁移问题<span class="heti-skip"><span class="heti-spacing"> </span>,<span class="heti-spacing"> </span></span>但没有彻底解决多任务冲突的问题。因为不同任务反向传播的梯度还是会直接影响底层专家网络的学习</p>
+<p>为了进一步缓解多任务冲突<span class="heti-skip"><span class="heti-spacing"> </span>, MMoE (Multi-gate Mixture-of-Experts)<span class="heti-spacing"> </span></span>为每个任务配备专属门控网络<span class="heti-skip"><span class="heti-spacing"> </span>,<span class="heti-spacing"> </span></span>实现了门控从<span class="heti-skip"><span class="heti-spacing"> </span>"<span class="heti-spacing"> </span></span>全局共享<span class="heti-skip"><span class="heti-spacing"> </span>"<span class="heti-spacing"> </span></span>升级为<span class="heti-skip"><span class="heti-spacing"> </span>"<span class="heti-spacing"> </span></span>任务自适应<span class="heti-skip"><span class="heti-spacing"> </span>"<span class="heti-spacing"> </span></span>的方式。<span>MMoE<span class="heti-spacing"> </span></span>的数学表达式可以表示为<span><span class="heti-spacing"> </span>:</span></p>
+<div class="arithmatex">\[
+\begin{aligned} 
+\mathbf{e}_k &amp;= f_k(\mathbf{x}) \\ 
+g_t(\mathbf{x}) &amp;= \text{softmax}(\mathbf{W}_t \mathbf{x}) \\ 
+\mathbf{h}_t &amp;= \sum_{k=1}^K g_{t,k} \cdot \mathbf{e}_k \\ 
+\hat{y}_t &amp;= f_t(\mathbf{h}_t)
+\end{aligned}
+\]</div>
+<p>其中<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(\mathbf{x}\)</span><span class="heti-spacing"> </span></span>表示底层的特征输入<span class="heti-skip"><span class="heti-spacing"> </span>, <span class="arithmatex">\(\mathbf{e}_k\)</span><span class="heti-spacing"> </span></span>表示第<span class="heti-skip"><span class="heti-spacing"> </span>k<span class="heti-spacing"> </span></span>个专家网络的输出<span class="heti-skip"><span class="heti-spacing"> </span>, <span class="arithmatex">\(g_t(\mathbf{x})\)</span><span class="heti-spacing"> </span></span>表示第<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(t\)</span><span class="heti-spacing"> </span></span>个任务融合专家网络的门控向量<span class="heti-skip"><span class="heti-spacing"> </span>, <span class="arithmatex">\(\mathbf{h}_t\)</span><span class="heti-spacing"> </span></span>表示第<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(t\)</span><span class="heti-spacing"> </span></span>个任务融合专家网络的输出<span class="heti-skip"><span class="heti-spacing"> </span>, <span class="arithmatex">\(\hat{y}_t\)</span><span class="heti-spacing"> </span></span>表示第<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(t\)</span><span class="heti-spacing"> </span></span>个任务的预测结果</p>
+<p>差异化特征融合门控网络<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(g_t\)</span><span class="heti-spacing"> </span></span>根据任务特性选择专家组合<span class="heti-skip"><span class="heti-spacing"> </span>,<span class="heti-spacing"> </span></span>例如在电商场景<span class="heti-skip"><span class="heti-spacing"> </span>, CTR<span class="heti-spacing"> </span></span>任务门控加权<span class="heti-skip"><span class="heti-spacing"> </span>"<span class="heti-spacing"> </span></span>即时兴趣<span class="heti-skip"><span class="heti-spacing"> </span>""<span class="heti-spacing"> </span></span>价格敏感<span class="heti-skip"><span class="heti-spacing"> </span>"<span class="heti-spacing"> </span></span>专家<span class="heti-skip"><span class="heti-spacing"> </span>, CVR<span class="heti-spacing"> </span></span>任务门控<span class="heti-skip"><span class="heti-spacing"> </span>:<span class="heti-spacing"> </span></span>侧重<span class="heti-skip"><span class="heti-spacing"> </span>"<span class="heti-spacing"> </span></span>消费能力<span class="heti-skip"><span class="heti-spacing"> </span>""<span class="heti-spacing"> </span></span>品牌忠诚<span class="heti-skip"><span class="heti-spacing"> </span>"<span class="heti-spacing"> </span></span>专家</p>
+<p>当任务<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(i\)</span><span class="heti-spacing"> </span></span>与<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(j\)</span><span class="heti-spacing"> </span></span>冲突时<span class="heti-skip"><span class="heti-spacing"> </span>, MMoE<span class="heti-spacing"> </span></span>的门控机制会让两个任务学习到不同专家的权重分布。例如<span class="heti-skip"><span class="heti-spacing"> </span>,<span class="heti-spacing"> </span></span>某个专家<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(e_m\)</span><span class="heti-spacing"> </span></span>可能在任务<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(i\)</span><span class="heti-spacing"> </span></span>的门控网络中获得很高的权重<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(g_{i,m}\)</span>,<span class="heti-spacing"> </span></span>而在任务<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(j\)</span><span class="heti-spacing"> </span></span>的门控网络中获得很低的权重<span><span class="heti-spacing"> </span><span class="arithmatex">\(g_{j,m}\)</span></span>。这样一来<span class="heti-skip"><span class="heti-spacing"> </span>,<span class="heti-spacing"> </span></span>专家<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(e_m\)</span><span class="heti-spacing"> </span></span>的参数更新主要由任务<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(i\)</span><span class="heti-spacing"> </span></span>的梯度决定<span class="heti-skip"><span class="heti-spacing"> </span>,<span class="heti-spacing"> </span></span>而任务<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(j\)</span><span class="heti-spacing"> </span></span>的梯度影响很小<span class="heti-skip"><span class="heti-spacing"> </span>,<span class="heti-spacing"> </span></span>从而实现了梯度隔离。不同任务通过选择不同的专家组合<span class="heti-skip"><span class="heti-spacing"> </span>,<span class="heti-spacing"> </span></span>可以各自学习到适合自己的特征表示<span class="heti-skip"><span class="heti-spacing"> </span>,<span class="heti-spacing"> </span></span>缓解任务冲突</p>
+<p><strong><span>MMoE<span class="heti-spacing"> </span></span>代码实践</strong></p>
+<p><span>MMoE<span class="heti-spacing"> </span></span>模型构建代码如下<span class="heti-skip"><span class="heti-spacing"> </span>,<span class="heti-spacing"> </span></span>先组装输入到<span class="heti-skip"><span class="heti-spacing"> </span>MoE<span class="heti-spacing"> </span></span>网络中的特征<span class="heti-skip"><span class="heti-spacing"> </span>dnn_inputs,<span class="heti-spacing"> </span></span>然后为每个任务创建一个门控网络输出最终融合专家网络的门控向量。最后为每个任务都创建一个任务塔<span class="heti-skip"><span class="heti-spacing"> </span>,<span class="heti-spacing"> </span></span>并且不同任务塔的输入都是对应任务的门控向量和多个专家网络融合后的向量</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">build_mmoe_model</span><span class="p">(</span>
+<a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a>        <span class="n">feature_columns</span><span class="p">,</span>
+<a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a>        <span class="n">task_name_list</span><span class="p">,</span>
+<a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a>        <span class="n">expert_nums</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+<a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a>        <span class="n">expert_dnn_units</span><span class="o">=</span><span class="p">[</span><span class="mi">128</span><span class="p">,</span> <span class="mi">64</span><span class="p">],</span>
+<a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a>        <span class="n">gate_dnn_units</span><span class="o">=</span><span class="p">[</span><span class="mi">128</span><span class="p">,</span> <span class="mi">64</span><span class="p">],</span>
+<a href="#__codelineno-11-7" id="__codelineno-11-7" name="__codelineno-11-7"></a>        <span class="n">task_tower_dnn_units</span><span class="o">=</span><span class="p">[</span><span class="mi">128</span><span class="p">,</span> <span class="mi">64</span><span class="p">],</span>
+<a href="#__codelineno-11-8" id="__codelineno-11-8" name="__codelineno-11-8"></a>        <span class="p">):</span>
+<a href="#__codelineno-11-9" id="__codelineno-11-9" name="__codelineno-11-9"></a>    <span class="c1"># 输入层:原始特征 → Keras 输入</span>
+<a href="#__codelineno-11-10" id="__codelineno-11-10" name="__codelineno-11-10"></a>    <span class="n">input_layer_dict</span> <span class="o">=</span> <span class="n">build_input_layer</span><span class="p">(</span><span class="n">feature_columns</span><span class="p">)</span>
+<a href="#__codelineno-11-11" id="__codelineno-11-11" name="__codelineno-11-11"></a>
+<a href="#__codelineno-11-12" id="__codelineno-11-12" name="__codelineno-11-12"></a>    <span class="c1"># 嵌入层:为各特征组创建嵌入表,得到组内嵌入向量</span>
+<a href="#__codelineno-11-13" id="__codelineno-11-13" name="__codelineno-11-13"></a>    <span class="n">embedding_table_dict</span> <span class="o">=</span> <span class="n">build_group_feature_embedding_table_dict</span><span class="p">(</span>
+<a href="#__codelineno-11-14" id="__codelineno-11-14" name="__codelineno-11-14"></a>        <span class="n">feature_columns</span><span class="p">,</span> <span class="n">input_layer_dict</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s2">"embedding/"</span>
+<a href="#__codelineno-11-15" id="__codelineno-11-15" name="__codelineno-11-15"></a>    <span class="p">)</span>
+<a href="#__codelineno-11-16" id="__codelineno-11-16" name="__codelineno-11-16"></a>
+<a href="#__codelineno-11-17" id="__codelineno-11-17" name="__codelineno-11-17"></a>    <span class="c1"># 合并嵌入:拼接为专家与门控的共同输入</span>
+<a href="#__codelineno-11-18" id="__codelineno-11-18" name="__codelineno-11-18"></a>    <span class="n">dnn_inputs</span> <span class="o">=</span> <span class="n">concat_group_embedding</span><span class="p">(</span><span class="n">embedding_table_dict</span><span class="p">,</span> <span class="s1">'dnn'</span><span class="p">)</span>
+<a href="#__codelineno-11-19" id="__codelineno-11-19" name="__codelineno-11-19"></a>
+<a href="#__codelineno-11-20" id="__codelineno-11-20" name="__codelineno-11-20"></a>    <span class="c1"># 共享专家:多个并行 DNN(专家)供所有任务共享</span>
+<a href="#__codelineno-11-21" id="__codelineno-11-21" name="__codelineno-11-21"></a>    <span class="n">expert_outputs</span> <span class="o">=</span> <span class="p">[</span><span class="n">DNNs</span><span class="p">(</span><span class="n">expert_dnn_units</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">"expert_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">"</span><span class="p">)(</span><span class="n">dnn_inputs</span><span class="p">)</span>
+<a href="#__codelineno-11-22" id="__codelineno-11-22" name="__codelineno-11-22"></a>                      <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">expert_nums</span><span class="p">)]</span>
+<a href="#__codelineno-11-23" id="__codelineno-11-23" name="__codelineno-11-23"></a>    <span class="c1"># 形状 [B, E, D]:按专家维度堆叠,便于后续加权求和</span>
+<a href="#__codelineno-11-24" id="__codelineno-11-24" name="__codelineno-11-24"></a>    <span class="n">experts</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Lambda</span><span class="p">(</span><span class="k">lambda</span> <span class="n">xs</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))(</span><span class="n">expert_outputs</span><span class="p">)</span>
+<a href="#__codelineno-11-25" id="__codelineno-11-25" name="__codelineno-11-25"></a>
+<a href="#__codelineno-11-26" id="__codelineno-11-26" name="__codelineno-11-26"></a>    <span class="c1"># 任务门控:每个任务产生 softmax 权重,对专家加权融合</span>
+<a href="#__codelineno-11-27" id="__codelineno-11-27" name="__codelineno-11-27"></a>    <span class="n">task_features</span> <span class="o">=</span> <span class="p">[]</span>
+<a href="#__codelineno-11-28" id="__codelineno-11-28" name="__codelineno-11-28"></a>    <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">task_name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">task_name_list</span><span class="p">):</span>
+<a href="#__codelineno-11-29" id="__codelineno-11-29" name="__codelineno-11-29"></a>        <span class="n">gate_hidden</span> <span class="o">=</span> <span class="n">DNNs</span><span class="p">(</span><span class="n">gate_dnn_units</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">"task_</span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s2">_gate_mlp"</span><span class="p">)(</span><span class="n">dnn_inputs</span><span class="p">)</span>
+<a href="#__codelineno-11-30" id="__codelineno-11-30" name="__codelineno-11-30"></a>        <span class="n">gate_weights</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="n">expert_nums</span><span class="p">,</span> <span class="n">use_bias</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<a href="#__codelineno-11-31" id="__codelineno-11-31" name="__codelineno-11-31"></a>                                             <span class="n">activation</span><span class="o">=</span><span class="s1">'softmax'</span><span class="p">,</span>
+<a href="#__codelineno-11-32" id="__codelineno-11-32" name="__codelineno-11-32"></a>                                             <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">"task_</span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s2">_gate_softmax"</span><span class="p">)(</span><span class="n">gate_hidden</span><span class="p">)</span>  <span class="c1"># [B, E]</span>
+<a href="#__codelineno-11-33" id="__codelineno-11-33" name="__codelineno-11-33"></a>        <span class="c1"># 加权融合:einsum('be,bed-&gt;bd') == sum_e w_e * expert_e</span>
+<a href="#__codelineno-11-34" id="__codelineno-11-34" name="__codelineno-11-34"></a>        <span class="n">task_mix</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Lambda</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">'be,bed-&gt;bd'</span><span class="p">,</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]))([</span><span class="n">gate_weights</span><span class="p">,</span> <span class="n">experts</span><span class="p">])</span>
+<a href="#__codelineno-11-35" id="__codelineno-11-35" name="__codelineno-11-35"></a>        <span class="n">task_features</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">task_mix</span><span class="p">)</span>
+<a href="#__codelineno-11-36" id="__codelineno-11-36" name="__codelineno-11-36"></a>
+<a href="#__codelineno-11-37" id="__codelineno-11-37" name="__codelineno-11-37"></a>    <span class="c1"># 任务塔:基于融合特征为每个任务建塔并输出概率</span>
+<a href="#__codelineno-11-38" id="__codelineno-11-38" name="__codelineno-11-38"></a>    <span class="n">task_outputs</span> <span class="o">=</span> <span class="p">[]</span>
+<a href="#__codelineno-11-39" id="__codelineno-11-39" name="__codelineno-11-39"></a>    <span class="k">for</span> <span class="n">task_name</span><span class="p">,</span> <span class="n">task_feat</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">task_name_list</span><span class="p">,</span> <span class="n">task_features</span><span class="p">):</span>
+<a href="#__codelineno-11-40" id="__codelineno-11-40" name="__codelineno-11-40"></a>        <span class="n">task_logit</span> <span class="o">=</span> <span class="n">DNNs</span><span class="p">(</span><span class="n">task_tower_dnn_units</span> <span class="o">+</span> <span class="p">[</span><span class="mi">1</span><span class="p">])(</span><span class="n">task_feat</span><span class="p">)</span>
+<a href="#__codelineno-11-41" id="__codelineno-11-41" name="__codelineno-11-41"></a>        <span class="n">task_prob</span> <span class="o">=</span> <span class="n">PredictLayer</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">"task_</span><span class="si">{</span><span class="n">task_name</span><span class="si">}</span><span class="s2">"</span><span class="p">)(</span><span class="n">task_logit</span><span class="p">)</span>
+<a href="#__codelineno-11-42" id="__codelineno-11-42" name="__codelineno-11-42"></a>        <span class="n">task_outputs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">task_prob</span><span class="p">)</span>
+<a href="#__codelineno-11-43" id="__codelineno-11-43" name="__codelineno-11-43"></a>
+<a href="#__codelineno-11-44" id="__codelineno-11-44" name="__codelineno-11-44"></a>    <span class="c1"># 构建模型:共享专家 + 任务门控 + 任务塔</span>
+<a href="#__codelineno-11-45" id="__codelineno-11-45" name="__codelineno-11-45"></a>    <span class="n">model</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Model</span><span class="p">(</span><span class="n">inputs</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">input_layer_dict</span><span class="o">.</span><span class="n">values</span><span class="p">()),</span> <span class="n">outputs</span><span class="o">=</span><span class="n">task_outputs</span><span class="p">)</span>
+<a href="#__codelineno-11-46" id="__codelineno-11-46" name="__codelineno-11-46"></a>    <span class="k">return</span> <span class="n">model</span>
+</code></pre></div>
+<p><strong>训练和评估</strong></p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-12-1" id="__codelineno-12-1" name="__codelineno-12-1"></a><span class="n">run_experiment</span><span class="p">(</span><span class="s1">'mmoe'</span><span class="p">)</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-13-1" id="__codelineno-13-1" name="__codelineno-13-1"></a>+----------------+---------------+-----------------+-------------+-----------------+----------------+------------------+--------------+---------------------+--------------------+----------------------+
+<a href="#__codelineno-13-2" id="__codelineno-13-2" name="__codelineno-13-2"></a>|   auc_is_click |   auc_is_like |   auc_long_view |   auc_macro |   gauc_is_click |   gauc_is_like |   gauc_long_view |   gauc_macro |   val_user_is_click |   val_user_is_like |   val_user_long_view |
+<a href="#__codelineno-13-3" id="__codelineno-13-3" name="__codelineno-13-3"></a>+================+===============+=================+=============+=================+================+==================+==============+=====================+====================+======================+
+<a href="#__codelineno-13-4" id="__codelineno-13-4" name="__codelineno-13-4"></a>|         0.6036 |        0.4203 |          0.4586 |      0.4942 |          0.5728 |         0.4362 |           0.4759 |        0.495 |                 928 |                530 |                  925 |
+<a href="#__codelineno-13-5" id="__codelineno-13-5" name="__codelineno-13-5"></a>+----------------+---------------+-----------------+-------------+-----------------+----------------+------------------+--------------+---------------------+--------------------+----------------------+
+</code></pre></div>
+<h4 id="ple">PLE<a class="headerlink" href="#ple" title="Permanent link">¶</a></h4>
+<p><span>MMoE<span class="heti-spacing"> </span></span>通过为每个任务配备专属门控网络<span class="heti-skip"><span class="heti-spacing"> </span>,<span class="heti-spacing"> </span></span>在一定程度上缓解了多任务冲突问题。专属门控网络能够根据任务特性选择专家组合<span class="heti-skip"><span class="heti-spacing"> </span>,<span class="heti-spacing"> </span></span>从而使得不同任务可以关注不同的特征表示。但其架构仍存在一个根本性局限<span><span class="heti-spacing"> </span>:</span><strong>所有专家对所有任务门控可见</strong>。这种<span class="heti-skip"><span class="heti-spacing"> </span>"<span class="heti-spacing"> </span></span>软隔离<span class="heti-skip"><span class="heti-spacing"> </span>"<span class="heti-spacing"> </span></span>设计在实践中仍面临两大挑战<span><span class="heti-spacing"> </span>:</span></p>
+<h5 id="_1">负迁移未根除<a class="headerlink" href="#_1" title="Permanent link"><span><span class="heti-spacing"> </span>¶</span></a></h5>
+<ul>
+<li><strong>干扰路径未切断</strong><span>:<span class="heti-spacing"> </span></span>即使某个专家<span class="heti-skip"><span class="heti-spacing"> </span>(<span class="heti-spacing"> </span></span>如<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(e_m\)</span>)<span class="heti-spacing"> </span></span>被任务<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(i\)</span><span class="heti-spacing"> </span></span>的门控高度加权而被任务<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(j\)</span><span class="heti-spacing"> </span></span>的门控忽略<span class="heti-skip"><span class="heti-spacing"> </span>,<span class="heti-spacing"> </span></span>任务<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(j\)</span><span class="heti-spacing"> </span></span>的梯度在反向传播时仍会流经<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(e_m\)</span> (<span class="heti-spacing"> </span></span>因为<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(e_m\)</span><span class="heti-spacing"> </span></span>是任务<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(j\)</span><span class="heti-spacing"> </span></span>门控的可选项<span><span class="heti-spacing"> </span>)</span>。当任务冲突强烈时<span class="heti-skip"><span class="heti-spacing"> </span>,<span class="heti-spacing"> </span></span>这种<span class="heti-skip"><span class="heti-spacing"> </span>"<span class="heti-spacing"> </span></span>潜在通路<span class="heti-skip"><span class="heti-spacing"> </span>"<span class="heti-spacing"> </span></span>仍可能导致共享表征被污染</li>
+<li><strong>专家角色模糊</strong><span>: MMoE<span class="heti-spacing"> </span></span>缺乏机制强制专家明确分工。一个专家可能同时承载共享信息和多个任务的特定信息<span class="heti-skip"><span class="heti-spacing"> </span>,<span class="heti-spacing"> </span></span>成为冲突的<span class="heti-skip"><span class="heti-spacing"> </span>"<span class="heti-spacing"> </span></span>重灾区<span><span class="heti-spacing"> </span>"</span>。尤其在任务相关性低时<span class="heti-skip"><span class="heti-spacing"> </span>,<span class="heti-spacing"> </span></span>这种耦合会加剧负迁移</li>
+</ul>
+<h5 id="_2">门控决策负担重<a class="headerlink" href="#_2" title="Permanent link"><span><span class="heti-spacing"> </span>¶</span></a></h5>
+<ul>
+<li>每个任务的门控需要在所有<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(K\)</span><span class="heti-spacing"> </span></span>个专家上进行权重分配。当专家数量增加<span class="heti-skip"><span class="heti-spacing"> </span>(<span class="heti-spacing"> </span></span>通常需扩大<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(K\)</span><span class="heti-spacing"> </span></span>以提升模型能力<span class="heti-skip"><span class="heti-spacing"> </span>)<span class="heti-spacing"> </span></span>时<span class="heti-skip"><span class="heti-spacing"> </span>,<span class="heti-spacing"> </span></span>门控网络面临高维决策问题<span class="heti-skip"><span class="heti-spacing"> </span>,<span class="heti-spacing"> </span></span>易导致训练不稳定或陷入次优解</li>
+<li>门控需要<span class="heti-skip"><span class="heti-spacing"> </span>"<span class="heti-spacing"> </span></span>费力<span class="heti-skip"><span class="heti-spacing"> </span>"<span class="heti-spacing"> </span></span>地从包含混杂信息<span class="heti-skip"><span class="heti-spacing"> </span>(<span class="heti-spacing"> </span></span>共享<span class="heti-skip"><span class="heti-spacing"> </span>+<span class="heti-spacing"> </span></span>所有任务特定<span class="heti-skip"><span class="heti-spacing"> </span>)<span class="heti-spacing"> </span></span>的专家池中筛选有用信息<span class="heti-skip"><span class="heti-spacing"> </span>,<span class="heti-spacing"> </span></span>增加了学习难度</li>
+</ul>
+<p>为解决上述问题<span class="heti-skip"><span class="heti-spacing"> </span>,<span class="heti-spacing"> </span></span>提出了<strong>CGC (Customized Gate Control)</strong> 结构<span class="heti-skip"><span class="heti-spacing"> </span>,<span class="heti-spacing"> </span></span>其核心思想是通过硬性结构约束<span class="heti-skip"><span class="heti-spacing"> </span>,<span class="heti-spacing"> </span></span>显式分离共享知识与任务特定知识<span><span class="heti-spacing"> </span>:</span></p>
+<figure>
+<img alt="public/Pasted image 20260217182612.png" src="../public/Pasted%20image%2020260217182612.png" width="400"/>
+</figure>
+<p><strong>专家职责强制分离</strong>:</p>
+<ul>
+<li>
+<p><strong>共享专家<span><span class="heti-spacing"> </span>(C-Experts)</span></strong><span>:<span class="heti-spacing"> </span></span>一组专家仅负责学习所有任务的共性知识。设其数量为<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(M\)</span>,<span class="heti-spacing"> </span></span>输出为<span><span class="heti-spacing"> </span><span class="arithmatex">\(\{\mathbf{c}_1, \mathbf{c}_2, ..., \mathbf{c}_M\}\)</span></span>。</p>
+</li>
+<li>
+<p><strong>任务专家<span><span class="heti-spacing"> </span>(T-Experts)</span></strong><span>:<span class="heti-spacing"> </span></span>每个任务<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(t\)</span><span class="heti-spacing"> </span></span>拥有自己专属的专家组<span class="heti-skip"><span class="heti-spacing"> </span>,<span class="heti-spacing"> </span></span>仅负责学习该任务特有的知识或模式。设任务<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(t\)</span><span class="heti-spacing"> </span></span>的专属专家数量为<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(N_t\)</span>,<span class="heti-spacing"> </span></span>输出为<span><span class="heti-spacing"> </span><span class="arithmatex">\(\{\mathbf{t}_t^1, \mathbf{t}_t^2, ..., \mathbf{t}_t^{N_t}\}\)</span></span>。</p>
+</li>
+</ul>
+<p><strong>任务专属门控的输入限制</strong>:</p>
+<ul>
+<li>
+<p>任务<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(t\)</span><span class="heti-spacing"> </span></span>的门控<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(g_t\)</span><span class="heti-spacing"> </span></span>的输入被严格限制为<span class="heti-skip"><span class="heti-spacing"> </span>:<span class="heti-spacing"> </span></span>共享专家输出<span class="heti-skip"><span class="heti-spacing"> </span>(<span class="arithmatex">\(\{\mathbf{c}_k\}_{k=1}^M\)</span>) +<span class="heti-spacing"> </span></span>本任务专属专家输出<span><span class="heti-spacing"> </span>(<span class="arithmatex">\(\{\mathbf{t}_t^j\}_{j=1}^{N_t}\)</span>)</span>。</p>
+</li>
+<li>
+<p><strong>物理切断干扰路径</strong><span>:<span class="heti-spacing"> </span></span>任务<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(t\)</span><span class="heti-spacing"> </span></span>的门控完全无法访问其他任务<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(s (s \neq t)\)</span><span class="heti-spacing"> </span></span>的专属专家<span><span class="heti-spacing"> </span><span class="arithmatex">\(\{\mathbf{t}_s^j\}\)</span></span>。同样<span class="heti-skip"><span class="heti-spacing"> </span>,<span class="heti-spacing"> </span></span>任务<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(s\)</span><span class="heti-spacing"> </span></span>的梯度绝不会更新任务<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(t\)</span><span class="heti-spacing"> </span></span>的专属专家参数。</p>
+</li>
+</ul>
+<p><span>CGC<span class="heti-spacing"> </span></span>门控的计算如下<span><span class="heti-spacing"> </span>:</span></p>
+<div class="arithmatex">\[g_t(\mathbf{x}) = \text{softmax}\Big(\mathbf{W}_t \cdot \mathbf{x} + \mathbf{b}_t\Big)\]</div>
+<div class="arithmatex">\[\mathbf{h}_t = \sum_{k=1}^{M} g_{t,k} \cdot \mathbf{c}_k + \sum_{j=1}^{N_t} g_{t, M+j} \cdot \mathbf{t}_t^j\]</div>
+<div class="arithmatex">\[\hat{y}_t = f_t(\mathbf{h}_t)\]</div>
+<p>其中<span><span class="heti-spacing"> </span>:</span></p>
+<ul>
+<li><span><span class="arithmatex">\(\mathbf{W}_t, \mathbf{b}_t\)</span>:<span class="heti-spacing"> </span></span>任务<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(t\)</span><span class="heti-spacing"> </span></span>门控的参数</li>
+<li><span><span class="arithmatex">\(g_{t, k}\)</span>:<span class="heti-spacing"> </span></span>分配给第<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(k\)</span><span class="heti-spacing"> </span></span>个共享专家的权重</li>
+<li><span><span class="arithmatex">\(g_{t, M+j}\)</span>:<span class="heti-spacing"> </span></span>分配给任务<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(t\)</span><span class="heti-spacing"> </span></span>第<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(j\)</span><span class="heti-spacing"> </span></span>个专属专家的权重</li>
+</ul>
+<p><strong><span>CGC<span class="heti-spacing"> </span></span>核心代码为<span><span class="heti-spacing"> </span>:</span></strong></p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-14-1" id="__codelineno-14-1" name="__codelineno-14-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">cgc_net</span><span class="p">(</span>
+<a href="#__codelineno-14-2" id="__codelineno-14-2" name="__codelineno-14-2"></a>        <span class="n">input_list</span><span class="p">,</span>
+<a href="#__codelineno-14-3" id="__codelineno-14-3" name="__codelineno-14-3"></a>        <span class="n">task_num</span><span class="p">,</span>
+<a href="#__codelineno-14-4" id="__codelineno-14-4" name="__codelineno-14-4"></a>        <span class="n">task_expert_num</span><span class="p">,</span>
+<a href="#__codelineno-14-5" id="__codelineno-14-5" name="__codelineno-14-5"></a>        <span class="n">shared_expert_num</span><span class="p">,</span>
+<a href="#__codelineno-14-6" id="__codelineno-14-6" name="__codelineno-14-6"></a>        <span class="n">task_expert_dnn_units</span><span class="p">,</span>
+<a href="#__codelineno-14-7" id="__codelineno-14-7" name="__codelineno-14-7"></a>        <span class="n">shared_expert_dnn_units</span><span class="p">,</span>
+<a href="#__codelineno-14-8" id="__codelineno-14-8" name="__codelineno-14-8"></a>        <span class="n">task_gate_dnn_units</span><span class="p">,</span>
+<a href="#__codelineno-14-9" id="__codelineno-14-9" name="__codelineno-14-9"></a>        <span class="n">shared_gate_dnn_units</span><span class="p">,</span>
+<a href="#__codelineno-14-10" id="__codelineno-14-10" name="__codelineno-14-10"></a>        <span class="n">leval_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<a href="#__codelineno-14-11" id="__codelineno-14-11" name="__codelineno-14-11"></a>        <span class="n">is_last</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<a href="#__codelineno-14-12" id="__codelineno-14-12" name="__codelineno-14-12"></a><span class="w">    </span><span class="sd">"""CGC(共享专家 + 任务门控)核心结构(简化版)</span>
+<a href="#__codelineno-14-13" id="__codelineno-14-13" name="__codelineno-14-13"></a><span class="sd">    - 每个任务:拥有若干 Task-Experts;</span>
+<a href="#__codelineno-14-14" id="__codelineno-14-14" name="__codelineno-14-14"></a><span class="sd">    - 全局:拥有若干 Shared-Experts;</span>
+<a href="#__codelineno-14-15" id="__codelineno-14-15" name="__codelineno-14-15"></a><span class="sd">    - 每个任务 Gate 产生 softmax 权重,对其 Task-Experts 与 Shared-Experts 加权融合;</span>
+<a href="#__codelineno-14-16" id="__codelineno-14-16" name="__codelineno-14-16"></a><span class="sd">    - 若非最后一层:再用 Shared-Gate 融合所有任务的 Task-Experts 与 Shared-Experts,供下一层共享使用。</span>
+<a href="#__codelineno-14-17" id="__codelineno-14-17" name="__codelineno-14-17"></a><span class="sd">    input_list:为方便处理,给每个任务复制一份相同输入,最后一个为共享输入。</span>
+<a href="#__codelineno-14-18" id="__codelineno-14-18" name="__codelineno-14-18"></a><span class="sd">    """</span>
+<a href="#__codelineno-14-19" id="__codelineno-14-19" name="__codelineno-14-19"></a>
+<a href="#__codelineno-14-20" id="__codelineno-14-20" name="__codelineno-14-20"></a>    <span class="c1"># 任务专家:每个任务创建 task_expert_num 个专家</span>
+<a href="#__codelineno-14-21" id="__codelineno-14-21" name="__codelineno-14-21"></a>    <span class="n">task_expert_list</span> <span class="o">=</span> <span class="p">[]</span>
+<a href="#__codelineno-14-22" id="__codelineno-14-22" name="__codelineno-14-22"></a>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">task_num</span><span class="p">):</span>
+<a href="#__codelineno-14-23" id="__codelineno-14-23" name="__codelineno-14-23"></a>        <span class="n">task_expert_list</span><span class="o">.</span><span class="n">append</span><span class="p">([</span>
+<a href="#__codelineno-14-24" id="__codelineno-14-24" name="__codelineno-14-24"></a>            <span class="n">DNNs</span><span class="p">(</span><span class="n">task_expert_dnn_units</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">leval_name</span><span class="si">}</span><span class="s2">_task_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">_expert_</span><span class="si">{</span><span class="n">j</span><span class="si">}</span><span class="s2">"</span><span class="p">)(</span><span class="n">input_list</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+<a href="#__codelineno-14-25" id="__codelineno-14-25" name="__codelineno-14-25"></a>            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">task_expert_num</span><span class="p">)</span>
+<a href="#__codelineno-14-26" id="__codelineno-14-26" name="__codelineno-14-26"></a>        <span class="p">])</span>
+<a href="#__codelineno-14-27" id="__codelineno-14-27" name="__codelineno-14-27"></a>
+<a href="#__codelineno-14-28" id="__codelineno-14-28" name="__codelineno-14-28"></a>    <span class="c1"># 共享专家:创建 shared_expert_num 个专家(共享输入使用 input_list[-1])</span>
+<a href="#__codelineno-14-29" id="__codelineno-14-29" name="__codelineno-14-29"></a>    <span class="n">shared_expert_list</span> <span class="o">=</span> <span class="p">[</span>
+<a href="#__codelineno-14-30" id="__codelineno-14-30" name="__codelineno-14-30"></a>        <span class="n">DNNs</span><span class="p">(</span><span class="n">shared_expert_dnn_units</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">leval_name</span><span class="si">}</span><span class="s2">_shared_expert_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">"</span><span class="p">)(</span><span class="n">input_list</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+<a href="#__codelineno-14-31" id="__codelineno-14-31" name="__codelineno-14-31"></a>        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">shared_expert_num</span><span class="p">)</span>
+<a href="#__codelineno-14-32" id="__codelineno-14-32" name="__codelineno-14-32"></a>    <span class="p">]</span>
+<a href="#__codelineno-14-33" id="__codelineno-14-33" name="__codelineno-14-33"></a>
+<a href="#__codelineno-14-34" id="__codelineno-14-34" name="__codelineno-14-34"></a>    <span class="c1"># 任务门控与融合:对当前任务的(Task + Shared)专家集合进行 softmax 加权求和</span>
+<a href="#__codelineno-14-35" id="__codelineno-14-35" name="__codelineno-14-35"></a>    <span class="n">cgc_outputs</span> <span class="o">=</span> <span class="p">[]</span>
+<a href="#__codelineno-14-36" id="__codelineno-14-36" name="__codelineno-14-36"></a>    <span class="n">fusion_expert_num</span> <span class="o">=</span> <span class="n">task_expert_num</span> <span class="o">+</span> <span class="n">shared_expert_num</span>
+<a href="#__codelineno-14-37" id="__codelineno-14-37" name="__codelineno-14-37"></a>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">task_num</span><span class="p">):</span>
+<a href="#__codelineno-14-38" id="__codelineno-14-38" name="__codelineno-14-38"></a>        <span class="n">cur_experts</span> <span class="o">=</span> <span class="n">task_expert_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">shared_expert_list</span>
+<a href="#__codelineno-14-39" id="__codelineno-14-39" name="__codelineno-14-39"></a>        <span class="n">experts</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Lambda</span><span class="p">(</span><span class="k">lambda</span> <span class="n">xs</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))(</span><span class="n">cur_experts</span><span class="p">)</span>  <span class="c1"># [B, E, D]</span>
+<a href="#__codelineno-14-40" id="__codelineno-14-40" name="__codelineno-14-40"></a>
+<a href="#__codelineno-14-41" id="__codelineno-14-41" name="__codelineno-14-41"></a>        <span class="n">gate_hidden</span> <span class="o">=</span> <span class="n">DNNs</span><span class="p">(</span><span class="n">task_gate_dnn_units</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">leval_name</span><span class="si">}</span><span class="s2">_task_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">_gate"</span><span class="p">)(</span><span class="n">input_list</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+<a href="#__codelineno-14-42" id="__codelineno-14-42" name="__codelineno-14-42"></a>        <span class="n">gate_weights</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="n">fusion_expert_num</span><span class="p">,</span> <span class="n">use_bias</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">'softmax'</span><span class="p">)(</span><span class="n">gate_hidden</span><span class="p">)</span>  <span class="c1"># [B, E]</span>
+<a href="#__codelineno-14-43" id="__codelineno-14-43" name="__codelineno-14-43"></a>
+<a href="#__codelineno-14-44" id="__codelineno-14-44" name="__codelineno-14-44"></a>        <span class="c1"># 加权融合:einsum('be,bed-&gt;bd') == sum_e w_e * expert_e</span>
+<a href="#__codelineno-14-45" id="__codelineno-14-45" name="__codelineno-14-45"></a>        <span class="n">fused</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Lambda</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">'be,bed-&gt;bd'</span><span class="p">,</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]))([</span><span class="n">gate_weights</span><span class="p">,</span> <span class="n">experts</span><span class="p">])</span>
+<a href="#__codelineno-14-46" id="__codelineno-14-46" name="__codelineno-14-46"></a>        <span class="n">cgc_outputs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fused</span><span class="p">)</span>
+<a href="#__codelineno-14-47" id="__codelineno-14-47" name="__codelineno-14-47"></a>
+<a href="#__codelineno-14-48" id="__codelineno-14-48" name="__codelineno-14-48"></a>    <span class="c1"># 若非最后一层:共享门控融合所有任务专家与共享专家,作为下一层共享输入</span>
+<a href="#__codelineno-14-49" id="__codelineno-14-49" name="__codelineno-14-49"></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_last</span><span class="p">:</span>
+<a href="#__codelineno-14-50" id="__codelineno-14-50" name="__codelineno-14-50"></a>        <span class="c1"># 展平所有任务的专家 + 共享专家</span>
+<a href="#__codelineno-14-51" id="__codelineno-14-51" name="__codelineno-14-51"></a>        <span class="n">all_task_experts</span> <span class="o">=</span> <span class="p">[</span><span class="n">e</span> <span class="k">for</span> <span class="n">task</span> <span class="ow">in</span> <span class="n">task_expert_list</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">task</span><span class="p">]</span>
+<a href="#__codelineno-14-52" id="__codelineno-14-52" name="__codelineno-14-52"></a>        <span class="n">cur_experts</span> <span class="o">=</span> <span class="n">all_task_experts</span> <span class="o">+</span> <span class="n">shared_expert_list</span>
+<a href="#__codelineno-14-53" id="__codelineno-14-53" name="__codelineno-14-53"></a>        <span class="n">experts_all</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Lambda</span><span class="p">(</span><span class="k">lambda</span> <span class="n">xs</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))(</span><span class="n">cur_experts</span><span class="p">)</span>  <span class="c1"># [B, E_all, D]</span>
+<a href="#__codelineno-14-54" id="__codelineno-14-54" name="__codelineno-14-54"></a>        <span class="n">cur_expert_num</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">cur_experts</span><span class="p">)</span>
+<a href="#__codelineno-14-55" id="__codelineno-14-55" name="__codelineno-14-55"></a>
+<a href="#__codelineno-14-56" id="__codelineno-14-56" name="__codelineno-14-56"></a>        <span class="n">shared_gate_hidden</span> <span class="o">=</span> <span class="n">DNNs</span><span class="p">(</span><span class="n">shared_gate_dnn_units</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">leval_name</span><span class="si">}</span><span class="s2">_shared_gate"</span><span class="p">)(</span><span class="n">input_list</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+<a href="#__codelineno-14-57" id="__codelineno-14-57" name="__codelineno-14-57"></a>        <span class="n">shared_gate_weights</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="n">cur_expert_num</span><span class="p">,</span> <span class="n">use_bias</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">'softmax'</span><span class="p">)(</span><span class="n">shared_gate_hidden</span><span class="p">)</span>  <span class="c1"># [B, E_all]</span>
+<a href="#__codelineno-14-58" id="__codelineno-14-58" name="__codelineno-14-58"></a>        <span class="n">shared_fused</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Lambda</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">'be,bed-&gt;bd'</span><span class="p">,</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]))([</span><span class="n">shared_gate_weights</span><span class="p">,</span> <span class="n">experts_all</span><span class="p">])</span>
+<a href="#__codelineno-14-59" id="__codelineno-14-59" name="__codelineno-14-59"></a>        <span class="n">cgc_outputs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">shared_fused</span><span class="p">)</span>
+<a href="#__codelineno-14-60" id="__codelineno-14-60" name="__codelineno-14-60"></a>
+<a href="#__codelineno-14-61" id="__codelineno-14-61" name="__codelineno-14-61"></a>    <span class="k">return</span> <span class="n">cgc_outputs</span>
+</code></pre></div>
+<p><span>CGC<span class="heti-spacing"> </span></span>解决了知识分离的核心问题<span class="heti-skip"><span class="heti-spacing"> </span>,<span class="heti-spacing"> </span></span>但其本质是单层结构<span class="heti-skip"><span class="heti-spacing"> </span>,<span class="heti-spacing"> </span></span>表征学习深度有限。受深度神经网络逐层抽象特征的启发<span><span class="heti-spacing"> </span>,</span><strong>PLE (Progressive Layered Extraction)</strong> 将多个<span class="heti-skip"><span class="heti-spacing"> </span>CGC<span class="heti-spacing"> </span></span>单元纵向堆叠<span class="heti-skip"><span class="heti-spacing"> </span>,<span class="heti-spacing"> </span></span>形成深层架构<span class="heti-skip"><span class="heti-spacing"> </span>,<span class="heti-spacing"> </span></span>实现渐进式知识提取与融合</p>
+<ul>
+<li><strong>第<span class="heti-skip"><span class="heti-spacing"> </span>1<span class="heti-spacing"> </span></span>层<span class="heti-skip"><span class="heti-spacing"> </span>(<span class="heti-spacing"> </span></span>输入层<span><span class="heti-spacing"> </span>CGC)</span></strong>:</li>
+<li>输入<span class="heti-skip"><span class="heti-spacing"> </span>:<span class="heti-spacing"> </span></span>原始特征<span><span class="heti-spacing"> </span><span class="arithmatex">\(\mathbf{x}\)</span></span></li>
+<li>结构<span class="heti-skip"><span class="heti-spacing"> </span>:<span class="heti-spacing"> </span></span>一个标准的<span class="heti-skip"><span class="heti-spacing"> </span>CGC<span class="heti-spacing"> </span></span>模块<span class="heti-skip"><span class="heti-spacing"> </span>(<span class="heti-spacing"> </span></span>包含<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(M^{(1)}\)</span><span class="heti-spacing"> </span></span>个<span class="heti-skip"><span class="heti-spacing"> </span>C-Experts,<span class="heti-spacing"> </span></span>每个任务<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(t\)</span><span class="heti-spacing"> </span></span>有<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(N_t^{(1)}\)</span><span class="heti-spacing"> </span></span>个<span class="heti-skip"><span class="heti-spacing"> </span>T-Experts,<span class="heti-spacing"> </span></span>以及对应的门控<span><span class="heti-spacing"> </span><span class="arithmatex">\(g_t^{(1)}\)</span>)</span></li>
+<li>输出<span class="heti-skip"><span class="heti-spacing"> </span>:<span class="heti-spacing"> </span></span>每个任务获得初步融合表示<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(\mathbf{h}_t^{(1)}\)</span> (<span class="heti-spacing"> </span></span>或更常见的是<span class="heti-skip"><span class="heti-spacing"> </span>,<span class="heti-spacing"> </span></span>该层所有专家<span class="heti-skip"><span class="heti-spacing"> </span>(C+T)<span class="heti-spacing"> </span></span>的输出被拼接<span class="heti-skip"><span class="heti-spacing"> </span>/<span class="heti-spacing"> </span></span>收集起来作为下一层输入<span><span class="heti-spacing"> </span>)</span></li>
+<li><strong>第<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(l\)</span><span class="heti-spacing"> </span></span>层</strong> (<span class="arithmatex">\(l \geq 2\)</span>) <strong>CGC</strong>:</li>
+<li><strong>输入关键点</strong><span>:<span class="heti-spacing"> </span></span>第<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(l\)</span><span class="heti-spacing"> </span></span>层的输入是第<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(l-1\)</span><span class="heti-spacing"> </span></span>层所有专家<span class="heti-skip"><span class="heti-spacing"> </span>(<span class="heti-spacing"> </span></span>包括所有<span class="heti-skip"><span class="heti-spacing"> </span>C-Experts<span class="heti-spacing"> </span></span>和所有任务的<span class="heti-skip"><span class="heti-spacing"> </span>T-Experts)<span class="heti-spacing"> </span></span>的输出。设第<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(l-1\)</span><span class="heti-spacing"> </span></span>层总专家数为<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(E^{(l-1)}\)</span>,<span class="heti-spacing"> </span></span>则输入向量维度相应增加</li>
+<li>结构<span class="heti-skip"><span class="heti-spacing"> </span>:<span class="heti-spacing"> </span></span>一个新的<span class="heti-skip"><span class="heti-spacing"> </span>CGC<span class="heti-spacing"> </span></span>模块<span class="heti-skip"><span class="heti-spacing"> </span>(<span class="heti-spacing"> </span></span>包含<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(M^{(l)}\)</span><span class="heti-spacing"> </span></span>个<span class="heti-skip"><span class="heti-spacing"> </span>C-Experts,<span class="heti-spacing"> </span></span>每个任务<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(t\)</span><span class="heti-spacing"> </span></span>有<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(N_t^{(l)}\)</span><span class="heti-spacing"> </span></span>个<span class="heti-skip"><span class="heti-spacing"> </span>T-Experts,<span class="heti-spacing"> </span></span>以及门控<span><span class="heti-spacing"> </span><span class="arithmatex">\(g_t^{(l)}\)</span>)</span></li>
+<li>处理<span class="heti-skip"><span class="heti-spacing"> </span>:<span class="heti-spacing"> </span></span>在本层输入特征<span class="heti-skip"><span class="heti-spacing"> </span>(<span class="heti-spacing"> </span></span>即上一层更丰富的表征<span class="heti-skip"><span class="heti-spacing"> </span>)<span class="heti-spacing"> </span></span>上<span class="heti-skip"><span class="heti-spacing"> </span>,<span class="heti-spacing"> </span></span>再次进行显式的知识分离<span class="heti-skip"><span class="heti-spacing"> </span>(<span class="heti-spacing"> </span></span>新的<span class="heti-skip"><span class="heti-spacing"> </span>C-Experts<span class="heti-spacing"> </span></span>学习更深层共享模式<span class="heti-skip"><span class="heti-spacing"> </span>,<span class="heti-spacing"> </span></span>新的<span class="heti-skip"><span class="heti-spacing"> </span>T-Experts<span class="heti-spacing"> </span></span>学习更深层任务特定模式<span class="heti-skip"><span class="heti-spacing"> </span>)<span class="heti-spacing"> </span></span>和融合<span class="heti-skip"><span class="heti-spacing"> </span>(<span class="heti-spacing"> </span></span>通过新的门控<span><span class="heti-spacing"> </span>)</span></li>
+<li>输出<span class="heti-skip"><span class="heti-spacing"> </span>:<span class="heti-spacing"> </span></span>任务<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(t\)</span><span class="heti-spacing"> </span></span>的当前层表示<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(\mathbf{h}_t^{(l)}\)</span><span class="heti-spacing"> </span></span>或收集所有专家输出</li>
+<li><strong>输出层</strong><span>(<span class="heti-spacing"> </span></span>第<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(L\)</span><span class="heti-spacing"> </span></span>层<span><span class="heti-spacing"> </span>):</span></li>
+<li>最后一层<span class="heti-skip"><span class="heti-spacing"> </span>(<span class="arithmatex">\(L\)</span>)<span class="heti-spacing"> </span></span>各任务的门控输出<span class="heti-skip"><span class="heti-spacing"> </span><span class="arithmatex">\(\mathbf{h}_t^{(L)}\)</span><span class="heti-spacing"> </span></span>送入各自的任务专属塔网络<span class="heti-skip"><span class="heti-spacing"> </span>(Tower) <span class="arithmatex">\(f_t\)</span>,<span class="heti-spacing"> </span></span>得到最终预测<span><span class="heti-spacing"> </span><span class="arithmatex">\(\hat{y}_t = f_t (\mathbf{h}_t^{(L)})\)</span></span></li>
+</ul>
+<p><strong><span>PLE<span class="heti-spacing"> </span></span>模型的核心代码<span><span class="heti-spacing"> </span>:</span></strong></p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-15-1" id="__codelineno-15-1" name="__codelineno-15-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">build_ple_model</span><span class="p">(</span>
+<a href="#__codelineno-15-2" id="__codelineno-15-2" name="__codelineno-15-2"></a>        <span class="n">feature_columns</span><span class="p">,</span>
+<a href="#__codelineno-15-3" id="__codelineno-15-3" name="__codelineno-15-3"></a>        <span class="n">task_name_list</span><span class="p">,</span>
+<a href="#__codelineno-15-4" id="__codelineno-15-4" name="__codelineno-15-4"></a>        <span class="n">ple_level_nums</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<a href="#__codelineno-15-5" id="__codelineno-15-5" name="__codelineno-15-5"></a>        <span class="n">task_expert_num</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+<a href="#__codelineno-15-6" id="__codelineno-15-6" name="__codelineno-15-6"></a>        <span class="n">shared_expert_num</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+<a href="#__codelineno-15-7" id="__codelineno-15-7" name="__codelineno-15-7"></a>        <span class="n">task_expert_dnn_units</span><span class="o">=</span><span class="p">[</span><span class="mi">128</span><span class="p">,</span> <span class="mi">64</span><span class="p">],</span>
+<a href="#__codelineno-15-8" id="__codelineno-15-8" name="__codelineno-15-8"></a>        <span class="n">shared_expert_dnn_units</span><span class="o">=</span><span class="p">[</span><span class="mi">128</span><span class="p">,</span> <span class="mi">64</span><span class="p">],</span>
+<a href="#__codelineno-15-9" id="__codelineno-15-9" name="__codelineno-15-9"></a>        <span class="n">task_gate_dnn_units</span><span class="o">=</span><span class="p">[</span><span class="mi">128</span><span class="p">,</span> <span class="mi">64</span><span class="p">],</span>
+<a href="#__codelineno-15-10" id="__codelineno-15-10" name="__codelineno-15-10"></a>        <span class="n">shared_gate_dnn_units</span><span class="o">=</span><span class="p">[</span><span class="mi">128</span><span class="p">,</span> <span class="mi">64</span><span class="p">],</span>
+<a href="#__codelineno-15-11" id="__codelineno-15-11" name="__codelineno-15-11"></a>        <span class="n">task_tower_dnn_units</span><span class="o">=</span><span class="p">[</span><span class="mi">128</span><span class="p">,</span> <span class="mi">64</span><span class="p">],</span>
+<a href="#__codelineno-15-12" id="__codelineno-15-12" name="__codelineno-15-12"></a>        <span class="p">):</span>
+<a href="#__codelineno-15-13" id="__codelineno-15-13" name="__codelineno-15-13"></a>    <span class="c1"># 1) 输入与嵌入:构建输入层/分组嵌入,拼接为 PLE 的共享输入</span>
+<a href="#__codelineno-15-14" id="__codelineno-15-14" name="__codelineno-15-14"></a>    <span class="n">input_layer_dict</span> <span class="o">=</span> <span class="n">build_input_layer</span><span class="p">(</span><span class="n">feature_columns</span><span class="p">)</span>
+<a href="#__codelineno-15-15" id="__codelineno-15-15" name="__codelineno-15-15"></a>    <span class="n">group_embedding_feature_dict</span> <span class="o">=</span> <span class="n">build_group_feature_embedding_table_dict</span><span class="p">(</span>
+<a href="#__codelineno-15-16" id="__codelineno-15-16" name="__codelineno-15-16"></a>        <span class="n">feature_columns</span><span class="p">,</span> <span class="n">input_layer_dict</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s2">"embedding/"</span>
+<a href="#__codelineno-15-17" id="__codelineno-15-17" name="__codelineno-15-17"></a>    <span class="p">)</span>
+<a href="#__codelineno-15-18" id="__codelineno-15-18" name="__codelineno-15-18"></a>    <span class="n">dnn_inputs</span> <span class="o">=</span> <span class="n">concat_group_embedding</span><span class="p">(</span><span class="n">group_embedding_feature_dict</span><span class="p">,</span> <span class="s1">'dnn'</span><span class="p">)</span>
+<a href="#__codelineno-15-19" id="__codelineno-15-19" name="__codelineno-15-19"></a>
+<a href="#__codelineno-15-20" id="__codelineno-15-20" name="__codelineno-15-20"></a>    <span class="c1"># 2) 级联 PLE(CGC)层:每层包含"任务专家 + 共享专家 + 门控",最后一层仅输出任务特征</span>
+<a href="#__codelineno-15-21" id="__codelineno-15-21" name="__codelineno-15-21"></a>    <span class="n">task_num</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">task_name_list</span><span class="p">)</span>
+<a href="#__codelineno-15-22" id="__codelineno-15-22" name="__codelineno-15-22"></a>    <span class="n">ple_input_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">dnn_inputs</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">task_num</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># 前 task_num 为各任务输入,末尾为共享输入</span>
+<a href="#__codelineno-15-23" id="__codelineno-15-23" name="__codelineno-15-23"></a>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ple_level_nums</span><span class="p">):</span>
+<a href="#__codelineno-15-24" id="__codelineno-15-24" name="__codelineno-15-24"></a>        <span class="n">is_last</span> <span class="o">=</span> <span class="p">(</span><span class="n">i</span> <span class="o">==</span> <span class="n">ple_level_nums</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+<a href="#__codelineno-15-25" id="__codelineno-15-25" name="__codelineno-15-25"></a>        <span class="n">ple_input_list</span> <span class="o">=</span> <span class="n">cgc_net</span><span class="p">(</span>
+<a href="#__codelineno-15-26" id="__codelineno-15-26" name="__codelineno-15-26"></a>            <span class="n">ple_input_list</span><span class="p">,</span>
+<a href="#__codelineno-15-27" id="__codelineno-15-27" name="__codelineno-15-27"></a>            <span class="n">task_num</span><span class="p">,</span>
+<a href="#__codelineno-15-28" id="__codelineno-15-28" name="__codelineno-15-28"></a>            <span class="n">task_expert_num</span><span class="p">,</span>
+<a href="#__codelineno-15-29" id="__codelineno-15-29" name="__codelineno-15-29"></a>            <span class="n">shared_expert_num</span><span class="p">,</span>
+<a href="#__codelineno-15-30" id="__codelineno-15-30" name="__codelineno-15-30"></a>            <span class="n">task_expert_dnn_units</span><span class="p">,</span>
+<a href="#__codelineno-15-31" id="__codelineno-15-31" name="__codelineno-15-31"></a>            <span class="n">shared_expert_dnn_units</span><span class="p">,</span>
+<a href="#__codelineno-15-32" id="__codelineno-15-32" name="__codelineno-15-32"></a>            <span class="n">task_gate_dnn_units</span><span class="p">,</span>
+<a href="#__codelineno-15-33" id="__codelineno-15-33" name="__codelineno-15-33"></a>            <span class="n">shared_gate_dnn_units</span><span class="p">,</span>
+<a href="#__codelineno-15-34" id="__codelineno-15-34" name="__codelineno-15-34"></a>            <span class="n">leval_name</span><span class="o">=</span><span class="sa">f</span><span class="s2">"cgc_level_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+<a href="#__codelineno-15-35" id="__codelineno-15-35" name="__codelineno-15-35"></a>            <span class="n">is_last</span><span class="o">=</span><span class="n">is_last</span>
+<a href="#__codelineno-15-36" id="__codelineno-15-36" name="__codelineno-15-36"></a>        <span class="p">)</span>
+<a href="#__codelineno-15-37" id="__codelineno-15-37" name="__codelineno-15-37"></a>
+<a href="#__codelineno-15-38" id="__codelineno-15-38" name="__codelineno-15-38"></a>    <span class="c1"># 3) 任务塔与输出:将各任务特征送入塔 DNN,得到每个任务的概率输出</span>
+<a href="#__codelineno-15-39" id="__codelineno-15-39" name="__codelineno-15-39"></a>    <span class="n">task_output_list</span> <span class="o">=</span> <span class="p">[]</span>
+<a href="#__codelineno-15-40" id="__codelineno-15-40" name="__codelineno-15-40"></a>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">task_num</span><span class="p">):</span>
+<a href="#__codelineno-15-41" id="__codelineno-15-41" name="__codelineno-15-41"></a>        <span class="n">task_logit</span> <span class="o">=</span> <span class="n">DNNs</span><span class="p">(</span><span class="n">task_tower_dnn_units</span> <span class="o">+</span> <span class="p">[</span><span class="mi">1</span><span class="p">])(</span><span class="n">ple_input_list</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+<a href="#__codelineno-15-42" id="__codelineno-15-42" name="__codelineno-15-42"></a>        <span class="n">task_prob</span> <span class="o">=</span> <span class="n">PredictLayer</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"task_"</span> <span class="o">+</span> <span class="n">task_name_list</span><span class="p">[</span><span class="n">i</span><span class="p">])(</span><span class="n">task_logit</span><span class="p">)</span>
+<a href="#__codelineno-15-43" id="__codelineno-15-43" name="__codelineno-15-43"></a>        <span class="n">task_output_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">task_prob</span><span class="p">)</span>
+<a href="#__codelineno-15-44" id="__codelineno-15-44" name="__codelineno-15-44"></a>
+<a href="#__codelineno-15-45" id="__codelineno-15-45" name="__codelineno-15-45"></a>    <span class="c1"># 4) 构建模型:输入为所有原始输入层,输出为各任务概率</span>
+<a href="#__codelineno-15-46" id="__codelineno-15-46" name="__codelineno-15-46"></a>    <span class="n">model</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Model</span><span class="p">(</span><span class="n">inputs</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">input_layer_dict</span><span class="o">.</span><span class="n">values</span><span class="p">()),</span> <span class="n">outputs</span><span class="o">=</span><span class="n">task_output_list</span><span class="p">)</span>
+<a href="#__codelineno-15-47" id="__codelineno-15-47" name="__codelineno-15-47"></a>    <span class="k">return</span> <span class="n">model</span>
+</code></pre></div>
+<p><strong>训练和评估</strong></p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-16-1" id="__codelineno-16-1" name="__codelineno-16-1"></a><span class="n">run_experiment</span><span class="p">(</span><span class="s1">'ple'</span><span class="p">)</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-17-1" id="__codelineno-17-1" name="__codelineno-17-1"></a>+----------------+---------------+-----------------+-------------+-----------------+----------------+------------------+--------------+---------------------+--------------------+----------------------+
+<a href="#__codelineno-17-2" id="__codelineno-17-2" name="__codelineno-17-2"></a>|   auc_is_click |   auc_is_like |   auc_long_view |   auc_macro |   gauc_is_click |   gauc_is_like |   gauc_long_view |   gauc_macro |   val_user_is_click |   val_user_is_like |   val_user_long_view |
+<a href="#__codelineno-17-3" id="__codelineno-17-3" name="__codelineno-17-3"></a>+================+===============+=================+=============+=================+================+==================+==============+=====================+====================+======================+
+<a href="#__codelineno-17-4" id="__codelineno-17-4" name="__codelineno-17-4"></a>|         0.5975 |        0.4191 |          0.4474 |       0.488 |           0.574 |         0.4434 |           0.4561 |       0.4912 |                 928 |                530 |                  925 |
+<a href="#__codelineno-17-5" id="__codelineno-17-5" name="__codelineno-17-5"></a>+----------------+---------------+-----------------+-------------+-----------------+----------------+------------------+--------------+---------------------+--------------------+----------------------+
+</code></pre></div>
+<h3 id="42"><span>4.2<span class="heti-spacing"> </span></span>任务依赖建模<a class="headerlink" href="#42" title="Permanent link"><span><span class="heti-spacing"> </span>¶</span></a></h3>
+<h3 id="43"><span>4.3<span class="heti-spacing"> </span></span>多目标损失融合<a class="headerlink" href="#43" title="Permanent link"><span><span class="heti-spacing"> </span>¶</span></a></h3>
+<hr/>
+<h2 id="05"><span>05<span class="heti-spacing"> </span></span>多场景建模<a class="headerlink" href="#05" title="Permanent link"><span><span class="heti-spacing"> </span>¶</span></a></h2>
+<h3 id="51"><span>5.1<span class="heti-spacing"> </span></span>多塔结构<a class="headerlink" href="#51" title="Permanent link"><span><span class="heti-spacing"> </span>¶</span></a></h3>
+<h3 id="52"><span>5.2<span class="heti-spacing"> </span></span>动态权重建模<a class="headerlink" href="#52" title="Permanent link"><span><span class="heti-spacing"> </span>¶</span></a></h3>
+<aside class="md-source-file">
+<span class="md-source-file__fact">
+<span class="md-icon" title="最后更新">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
+</span>
+<span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-datetime" title="2026年2月18日 23:35:04 CST">2026年2月18日 23:35:04</span>
+</span>
+<span class="md-source-file__fact">
+<span class="md-icon" title="创建日期">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M14.47 15.08 11 13V7h1.5v5.25l3.08 1.83c-.41.28-.79.62-1.11 1m-1.39 4.84c-.36.05-.71.08-1.08.08-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8c0 .37-.03.72-.08 1.08.69.1 1.33.32 1.92.64.1-.56.16-1.13.16-1.72 0-5.5-4.5-10-10-10S2 6.5 2 12s4.47 10 10 10c.59 0 1.16-.06 1.72-.16-.32-.59-.54-1.23-.64-1.92M18 15v3h-3v2h3v3h2v-3h3v-2h-3v-3z"></path></svg>
+</span>
+<span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-datetime" title="2026年2月18日 23:35:04 CST">2026年2月18日 23:35:04</span>
+</span>
+</aside>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  回到页面顶部
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.code.annotate", "navigation.tracking", "navigation.tabs", "navigation.indexes", "navigation.top"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../js/baidu-tongji.js"></script>
+<script src="https://gcore.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js"></script>
+<script src="../../js/katex.js"></script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</body>
+</html>
