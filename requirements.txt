@@ -1,0 +1,7 @@
+mkdocs-material
+mkdocs-obsidian-support
+mkdocs-heti-plugin
+mkdocs-statistics-plugin
+mkdocs-changelog-plugin
+mkdocs-git-revision-date-localized-plugin
+pymdown-extensions
