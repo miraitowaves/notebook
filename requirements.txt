@@ -1,5 +1,5 @@
 mkdocs-material
-mkdocs-obsidian-support
+mkdocs-obsidian-support-plugin
 mkdocs-heti-plugin
 mkdocs-statistics-plugin
 mkdocs-changelog-plugin
